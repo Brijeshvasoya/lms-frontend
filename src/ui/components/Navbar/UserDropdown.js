@@ -1,5 +1,6 @@
 import React, { useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch} from "react-redux";
 import { Menu, User, Power } from "react-feather";
 import {
   Dropdown,
@@ -21,7 +22,6 @@ const UserDropdown = (props) => {
     
   const signOut = () => {
     navigate("/");
-    const newUser = { ...activeUser, isVerified: false };
     localStorage.removeItem("active_user");
     localStorage.clear();
     removeCookie("remember");
@@ -35,7 +35,7 @@ const UserDropdown = (props) => {
     <div>
       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
         <DropdownToggle
-          className="flex items-center space-x-2 px-4 py-2 text-white bg-gray-700 rounded-lg hover:bg-gray-600 transition-all"
+          className="flex items-center space-x-2 px-4 py-2 text-white bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg hover: transition-all"
           caret
         >
           <span>{user?.role}</span>

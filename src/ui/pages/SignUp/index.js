@@ -2,10 +2,11 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { useMutation } from "@apollo/client";
 import InputPasswordToggle from "../../components/input-password-toggle";
 import DatePicker from "../../components/DatePicker";
 import Spinner from "../../components/Spinner";
-
+import { SIGN_UP } from "./mutation.js";
 import {
   CardTitle,
   CardText,
@@ -19,6 +20,7 @@ import { useForm, Controller } from "react-hook-form";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [signUp, { loading }] = useMutation(SIGN_UP);
 
   const source = require(`../../../../src/assets/images/logo.png`);
   const cover = require(`../../../../src/assets/images/pages/sign-up.avif`);
@@ -35,18 +37,34 @@ const Index = () => {
 
   const onSubmit = (data, e) => {
     e.preventDefault();
-    data.email = data.email.toLowerCase().trim();
-    data.password = data.password.trim();
-    console.log(data);
+    if (data) {
+      delete data.cpassword;
+      data.email = data.email.toLowerCase().trim();
+      data.password = data.password.trim();
+      data.age = Number(data.age);
+      signUp({
+        variables: {
+          input: data,
+        },
+      })
+        .then(() => {
+          toast.success("Signed up successfully");
+          navigate("/");
+        })
+        .catch((err) => {
+          toast.error(err?.message);
+        });
+    }
+    reset();
   };
 
   return (
     <div className="flex container">
-      {/* {loading && (
+      {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <Spinner size={75} color="#ffffff" />
         </div>
-      )} */}
+      )}
       <div className="w-1/2 flex flex-col justify-start items-start p-8">
         <img
           src={source}
@@ -220,15 +238,19 @@ const Index = () => {
                     <DatePicker
                       max={moment()._d}
                       placeholder="Enter Date of Birth"
-                      invalid={errors?.dob && true}
+                      invalid={!!errors?.dob}
                       onChange={(e) => onChange(e[0])}
-                      className="mt-2 p-3 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className={`mt-2 p-3 w-full rounded-lg border ${
+                        errors?.dob
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-indigo-500"
+                      } focus:outline-none focus:ring-2`}
                       value={value}
                     />
                   );
                 }}
               />
-              {errors && errors?.dob && (
+              {errors?.dob && (
                 <FormText className="text-red-500">
                   {errors.dob?.message}
                 </FormText>

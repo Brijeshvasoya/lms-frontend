@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
+import { useMutation } from "@apollo/client";
 import InputPasswordToggle from "../../components/input-password-toggle";
 import Spinner from "../../components/Spinner";
-
+import { SIGN_IN } from "./mutation.js";
 import {
   CardTitle,
   CardText,
@@ -30,19 +31,45 @@ const Index = () => {
   } = useForm();
   const [rememberMe, setRememberMe] = useState(false);
   const [, setCookie] = useCookies(["Remember"]);
+  const [signIn, { loading }] = useMutation(SIGN_IN);
 
   const onSubmit = (data, e) => {
     e.preventDefault();
-    if(data){
-      console.log(data);
-      localStorage.setItem("token",data);
+    if (data?.email && data?.password) {
+      signIn({
+        variables: {
+          userData: { email: data?.email.trim(), password: data?.password },
+        },
+      })
+        .then(async ({ data }) => {
+          if (rememberMe) {
+            const userEmail = data?.signInUser?.user?.email;  
+            setCookie("remember", JSON.stringify(userEmail));
+          }
+          if (data?.signInUser?.token) {
+            localStorage.setItem("token", data?.signInUser?.token);
+            localStorage.setItem(
+              "active_user",
+              JSON.stringify(data?.signInUser?.user)
+            );
+            toast.success("Login Successfully", { autoClose: 1000 });
+            if (data?.signInUser?.user?.role === "admin") {
+              navigate("/admin-dashboard");
+            } else {
+              navigate("/dashboard");
+            }
+          }
+        })
+        .catch((err) => {
+          toast.error(err?.message, { autoClose: 2000 });
+        });
     }
     reset();
   };
 
   return (
     <div className="flex h-screen container">
-      {false && (
+      {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <Spinner size={75} color="#ffffff" />
         </div>

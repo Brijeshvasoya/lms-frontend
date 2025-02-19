@@ -10,6 +10,7 @@ const DatePicker = ({
   onChange, 
   placeholder = 'Select Date', 
   className = '', 
+  invalid = false,
   ...rest 
 }) => {
   return (
@@ -17,14 +18,18 @@ const DatePicker = ({
       {label && <Label>{label}</Label>}
       <Flatpickr
         value={value}
-        onChange={(selectedDates) => onChange(selectedDates[0])}
+        onChange={(selectedDates) => {
+          if (selectedDates && selectedDates.length > 0) {
+            onChange(selectedDates);
+          }
+        }}
         options={{
           dateFormat: 'Y-m-d',
           maxDate: 'today',
           ...rest
         }}
         placeholder={placeholder}
-        className={`form-control ${className}`}
+        className={`form-control ${className} ${invalid ? 'is-invalid' : ''}`}
       />
     </FormGroup>
   );

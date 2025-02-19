@@ -1,9 +1,13 @@
-import React from 'react';
-import {Routers} from './Router/Router.js';
+import React from "react";
+import { Routers } from "./Router/Router.js";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
-    <Routers />
+    <>
+      <Routers />
+      <ToastContainer />
+    </>
   );
 }
 

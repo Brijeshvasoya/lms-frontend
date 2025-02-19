@@ -3,24 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.13.1",
     "@reduxjs/toolkit": "^2.5.1",
     "classnames": "^2.5.1",
+    "dotenv": "^16.4.7",
     "flatpickr": "^4.6.13",
+    "graphql": "^16.10.0",
+    "graphql-tag": "^2.12.6",
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-cookie": "^7.2.2",
+    "react-data-table-component": "^7.6.2",
     "react-datepicker": "^8.1.0",
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
     "react-flatpickr": "^3.10.13",
     "react-hook-form": "^7.54.2",
+    "react-perfect-scrollbar": "^1.5.8",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.5",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-spinners": "^0.15.0",
+    "react-switch": "^7.1.0",
     "react-toastify": "^11.0.3",
     "reactstrap": "^9.2.3",
     "redux": "^5.0.1",
+    "sweetalert2": "^11.6.13",
     "tailwindcss": "^3.4.1",
     "web-vitals": "^4.2.4"
   },
@@ -50,6 +58,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38"
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.1"
   }
 }
