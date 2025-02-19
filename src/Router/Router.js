@@ -44,20 +44,12 @@ const ProtectRoute = (props) => {
     }
   }, [token, navigate, role]);
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
   return (
     <div className="flex">
-      <Sidebar
-        isSidebarCollapsed={isSidebarCollapsed}
-        setIsSidebarCollapsed={setIsSidebarCollapsed}
-      />
-      <div>
-        <Navbar
-          isSidebarCollapsed={isSidebarCollapsed}
-          setIsSidebarCollapsed={setIsSidebarCollapsed}
-        />
-        <div className="p-4">
+      <Sidebar />
+      <div className="w-full">
+        <Navbar />
+        <div className="px-4">
           <Component />
         </div>
       </div>
@@ -83,20 +75,12 @@ const AdminRoute = (props) => {
     }
   }, [token, navigate, role]);
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
   return (
     <div className="flex">
-      <Sidebar
-        isSidebarCollapsed={isSidebarCollapsed}
-        setIsSidebarCollapsed={setIsSidebarCollapsed}
-      />
-      <div>
-        <Navbar
-          isSidebarCollapsed={isSidebarCollapsed}
-          setIsSidebarCollapsed={setIsSidebarCollapsed}
-        />
-        <div className="p-4">
+      <Sidebar />
+      <div className="w-full">
+        <Navbar />
+        <div className="px-4">
           <Component />
         </div>
       </div>

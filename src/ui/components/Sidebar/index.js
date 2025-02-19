@@ -10,8 +10,8 @@ const Index = () => {
   
   const AdminsidebarItems = [
     { icon: <Home className="w-6 h-6" />, label: "Dashboard", path: "/admin-dashboard" },
+    { icon: <BookOpen className="w-6 h-6" />, label: "Add Book", path: "/add-book" },
     { icon: <Users className="w-6 h-6" />, label: "Users", path: "/users" },
-    { icon: <BookOpen className="w-6 h-6" />, label: "Books", path: "/books" },
   ];
   
   const UsersidebarItems = [
@@ -51,8 +51,8 @@ const Index = () => {
 
   return (
     <div className="flex">
-      <div className="w-64 bg-gradient-to-b from-blue-500 to-blue-700 text-white h-screen shadow-2xl">
-        <div className="flex items-center justify-center p-6 border-b border-gray-700">
+      <div className="w-64 bg-gradient-to-b from-blue-500 to-purple-500 text-white h-full min-h-screen shadow-2xl">
+        <div className="flex items-center justify-center p-6">
           <img 
             src={logo} 
             alt="Logo" 

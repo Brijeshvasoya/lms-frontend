@@ -1,0 +1,320 @@
+import React, { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Label, Button, Input, FormText } from "reactstrap";
+import { useNavigate } from "react-router-dom";
+import { useMutation,useQuery } from "@apollo/client";
+import moment from "moment";
+import DatePicker from "../../components/DatePicker";
+import { Camera } from "react-feather";
+import { toast } from "react-toastify";
+import dummyBookCover from "../../../assets/avatar-blank.png";
+import Spinner from "../../components/Spinner";
+import { ADD_BOOK, UPDATE_BOOK } from "./mutation";
+import { GET_BOOKS } from "../AdminDashboard/query";
+
+const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
+  const navigate = useNavigate();
+  const [base64Url, setBase64Url] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const {refetch} = useQuery(GET_BOOKS);
+
+  const [addBook, { loading: addBookLoading }] = useMutation(ADD_BOOK, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  });
+
+  const [updateBook, { loading: updateBookLoading }] = useMutation(UPDATE_BOOK, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  });
+
+  useEffect(() => {
+    setLoading(addBookLoading || updateBookLoading);
+  }, [addBookLoading, updateBookLoading]);
+
+  useEffect(() => {
+    if (isEdit && bookData) {
+      setBase64Url(bookData.coverImage);
+      reset({
+        title: bookData.title,
+        author: bookData.author,
+        publisher: bookData.publisher,
+        publishDate: new Date(parseInt(bookData.publishDate)),
+      });
+    }
+  }, [isEdit, bookData, reset]);
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setBase64Url(reader.result);
+        toast.success("Book cover uploaded successfully", { autoClose: 1000 });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onSubmit = (data) => {
+    if (!base64Url) {
+      toast.error("Please upload a book cover", { autoClose: 2000 });
+      return;
+    }
+
+    const bookInput = {
+      ...data,
+      coverImage: base64Url,
+    };
+
+    if (isEdit) {
+      updateBook({
+        variables: {
+          id: bookData._id,
+          input: bookInput,
+        },
+      })
+        .then(() => {
+          toast.success("Book updated successfully", { autoClose: 1000 });
+          setLoading(false);
+          onSuccess();
+          refetch();
+        })
+        .catch((err) => {
+          toast.error(err?.message, { autoClose: 2000 });
+          setLoading(false);
+        });
+    } else {
+      addBook({
+        variables: {
+          input: bookInput,
+        },
+      })
+        .then(() => {
+          toast.success("Book added successfully", { autoClose: 1000 });
+          setLoading(false);
+          setBase64Url("");
+          refetch();
+          navigate(-1);
+          reset();
+        })
+        .catch((err) => {
+          toast.error(err?.message, { autoClose: 2000 });
+          setLoading(false);
+        });
+    }
+  };
+
+  const handleCancel = () => {
+    if (isEdit) {
+      onSuccess();
+    } else {
+      navigate(-1);
+    }
+  };
+
+  return (
+    <div className={`${isEdit ? 'w-full' : 'container mx-auto px-4 py-6'}`}>
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <Spinner size={75} color="#ffffff" />
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className={`bg-white ${!isEdit && 'p-6 rounded-xl shadow-lg border border-gray-100'}`}>
+          {!isEdit && (
+            <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
+              Add New Book
+            </h3>
+          )}
+
+          <div className={`${isEdit ? 'flex gap-6' : 'space-y-6'}`}>
+            {/* Image Upload Section */}
+            <div className={`${isEdit ? 'w-1/3' : 'w-full'}`}>
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  <img
+                    src={base64Url || dummyBookCover}
+                    alt="Book Cover"
+                    className="w-48 h-64 object-cover rounded-lg shadow-md border-2 border-gray-200"
+                  />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="cover-image"
+                  />
+                  <Label
+                    htmlFor="cover-image"
+                    className="cursor-pointer absolute bottom-2 right-2 bg-blue-500 hover:bg-blue-600 rounded-full p-2 transition-colors"
+                  >
+                    <Camera className="h-5 w-5 text-white" />
+                  </Label>
+                </div>
+              </div>
+            </div>
+
+            {/* Form Fields Section */}
+            <div className={`${isEdit ? 'w-2/3' : 'w-full'}`}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label
+                    htmlFor="title"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Book Title<span className="text-red-500 ml-1">*</span>
+                  </Label>
+                  <Controller
+                    name="title"
+                    control={control}
+                    rules={{ required: "Book title is required" }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Enter book title"
+                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    )}
+                  />
+                  {errors.title && (
+                    <FormText className="text-red-500 text-sm mt-1">
+                      {errors.title.message}
+                    </FormText>
+                  )}
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="author"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Author<span className="text-red-500 ml-1">*</span>
+                  </Label>
+                  <Controller
+                    name="author"
+                    control={control}
+                    rules={{ required: "Author name is required" }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Enter author name"
+                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    )}
+                  />
+                  {errors.author && (
+                    <FormText className="text-red-500 text-sm mt-1">
+                      {errors.author.message}
+                    </FormText>
+                  )}
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="publisher"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Publisher<span className="text-red-500 ml-1">*</span>
+                  </Label>
+                  <Controller
+                    name="publisher"
+                    control={control}
+                    rules={{ required: "Publisher name is required" }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Enter publisher name"
+                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    )}
+                  />
+                  {errors.publisher && (
+                    <FormText className="text-red-500 text-sm mt-1">
+                      {errors.publisher.message}
+                    </FormText>
+                  )}
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="publishDate"
+                    className="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Publish Date<span className="text-red-500 ml-1">*</span>
+                  </Label>
+                  <Controller
+                    name="publishDate"
+                    control={control}
+                    rules={{    
+                      required: "Date of Birth is required",
+                    }}
+                    render={({ field: { onChange, value } }) => {
+                      return (
+                        <DatePicker
+                          max={moment()._d}
+                          placeholder="Enter Date of Birth"
+                          invalid={!!errors?.publishDate}
+                          onChange={(e) => onChange(e[0])}
+                          className={`mt-2 p-3 w-full rounded-lg border ${
+                            errors?.publishDate
+                              ? "border-red-500 focus:ring-red-500"
+                              : "border-gray-300 focus:ring-indigo-500"
+                          } focus:outline-none focus:ring-2`}
+                          value={value}
+                        />
+                      );
+                    }}
+                  />
+                  {errors.publishDate && (
+                    <FormText className="text-red-500 text-sm mt-1">
+                      {errors.publishDate.message}
+                    </FormText>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-4 mt-6">
+                <Button
+                  type="button"
+                  color="secondary"
+                  onClick={handleCancel}
+                  className="px-6 py-2.5 text-white font-medium rounded-lg bg-gray-500 hover:bg-gray-600 transition-colors focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="px-6 py-2.5 text-white font-medium rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                >
+                  {isEdit ? "Update Book" : "Add Book"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default Index;

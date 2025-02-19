@@ -77,6 +77,10 @@ const Index = () => {
     setSearchTerm(term);
   };
 
+  const handleViewUser = (row) => {
+    console.log(row?._id);
+  }
+
   const handleDeleteUser = (row) => {
     ConfirmationModal(
       "warning",
@@ -159,7 +163,7 @@ const Index = () => {
   }
 
   return (
-    <div className="w-">
+    <div>
       <div className="flex justify-between mt-4 space-x-4">
         <Input
           type="text"
@@ -173,6 +177,7 @@ const Index = () => {
         <Table
           columns={userTable}
           data={filteredUsers}
+          viewData={handleViewUser}
           deleteData={handleDeleteUser}
           loading={loading}
           handleActiveUser={handleActiveUser}

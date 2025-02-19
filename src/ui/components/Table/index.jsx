@@ -24,7 +24,7 @@ const Table = ({
     },
     headRow: {
       style: {
-        backgroundColor: "#2d3748",
+        background: "linear-gradient(to top, #3b82f6, #7e22ce)",
         borderBottom: "1px solid #e2e8f0",
       },
     },
