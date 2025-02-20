@@ -6,11 +6,15 @@ import logo from "../../../../src/assets/images/logo.png";
 import source from "../../../../src/assets/images/pages/forgot-password.avif";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "react-feather";
+import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
+import { FORGOT_PASSWORD } from "./mutation";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+
+  const [forgotPassword, { loading }] = useMutation(FORGOT_PASSWORD);
 
   const {
     control,
@@ -26,17 +30,29 @@ const ForgotPassword = () => {
 
   const onSubmit = (data, e) => {
     e.preventDefault();
-    console.log(data)
+    delete data.cpassword;
+    forgotPassword({
+      variables: {
+        userData: data
+      },
+    })
+      .then(() => {
+        toast.success("Password Changed Successfully");
+        navigate("/");
+      })
+      .catch((err) => {
+        toast.error(err?.message);
+      });
     reset();
   };
 
   return (
     <div className="flex h-screen container">
-      {/* {loading && (
+      {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <Spinner size={75} color="#ffffff" />
         </div>
-      )} */}
+      )}
       <div className="w-1/2 flex flex-col justify-start items-start p-8">
         <img
           src={logo}
@@ -173,15 +189,10 @@ const ForgotPassword = () => {
             <Button
               type="submit"
               block
-              // disabled={loading}
-              className={`w-full py-2 px-4 font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all ${""
-                // loading
-                //   ? "bg-slate-400  cursor-not-allowed"
-                //   : "bg-slate-800  hover:bg-slate-600 "
-              }`}
+              disabled={loading}
+              className={`w-full py-2 px-4 font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg transition-all`}
             >
               ReSet Password
-              {/* {loading ? "Sending..." : "ReSet Password"} */}
             </Button>
           </Form>
           <Link

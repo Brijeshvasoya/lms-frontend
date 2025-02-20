@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { Button, UncontrolledTooltip } from "reactstrap";
-import { Edit, Trash, Heart, BookOpen } from "react-feather";
+import { Button } from "reactstrap";
+import { Edit, Trash } from "react-feather";
 import Spinner from "../../components/Spinner";
 import Modal from "../../components/Modal";
 import { GET_BOOKS } from "./query";
@@ -12,19 +12,21 @@ import { DELETE_BOOK } from "./mutation";
 import ConfirmationModal from "../../components/Alert";
 
 const Index = () => {
-  const { loading, error, data,refetch } = useQuery(GET_BOOKS);
-  const [deleteBook, { loading: deleteBookLoading }] = useMutation(DELETE_BOOK,{
-    context: {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const { loading, error, data, refetch } = useQuery(GET_BOOKS);
+  const [deleteBook, { loading: deleteBookLoading }] = useMutation(
+    DELETE_BOOK,
+    {
+      context: {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       },
-    },
-  });
-  const [books, setBooks]= useState([]);
+    }
+  );
+  const [books, setBooks] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
-  const [onSuccess, setOnSuccess] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -36,7 +38,6 @@ const Index = () => {
     setSelectedBook(book);
     setIsEditModalOpen(true);
     setIsEdit(true);
-    setOnSuccess(false);
   };
 
   const toggleEditModal = () => {
@@ -44,7 +45,6 @@ const Index = () => {
     if (isEditModalOpen) {
       setSelectedBook(null);
       setIsEdit(false);
-      setOnSuccess(false);
     }
   };
 
@@ -67,27 +67,17 @@ const Index = () => {
           deleteBook({
             variables: { id: book._id },
           })
-          .then(() => {
-            toast.success("Book deleted successfully", { autoClose: 1000 });
-            refetch();
-          })
-          .catch((err) => {
-            toast.error(err?.message || "Failed to delete book");
-          });
+            .then(() => {
+              toast.success("Book deleted successfully", { autoClose: 1000 });
+              refetch();
+            })
+            .catch((err) => {
+              toast.error(err?.message || "Failed to delete book");
+            });
         });
       }
-    })
+    });
     console.log("Delete book:", book);
-  };
-
-  const handleWishlist = (book) => {
-    console.log("Add to wishlist:", book);
-    toast.success("Added to wishlist successfully", { autoClose: 1000 });
-  };
-
-  const handleIssue = (book) => {
-    console.log("Issue book:", book);
-    toast.success("Book issued successfully", { autoClose: 1000 });
   };
 
   if (error) {
@@ -96,7 +86,7 @@ const Index = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      {loading ? (
+      {loading || deleteBookLoading ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <Spinner size={75} color="#ffffff" />
         </div>
@@ -124,58 +114,21 @@ const Index = () => {
                       <h3 className="text-white font-bold text-lg truncate flex-1 mr-2">
                         {book.title}
                       </h3>
-
-                      {/* Wishlist Button
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Button
-                          id={`wishlist-${book._id}`}
-                          onClick={() => handleWishlist(book)}
-                          className="p-2 bg-white/90 hover:bg-white text-red-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
-                        >
-                          <Heart
-                            className="transform hover:scale-110 transition-transform"
-                            size={16}
-                          />
-                        </Button>
-                        <UncontrolledTooltip
-                          target={`wishlist-${book._id}`}
-                          placement="top"
-                        >
-                          <span className="text-white">Add to Wishlist</span>
-                        </UncontrolledTooltip>
-
-                        <Button
-                          id={`issue-${book._id}`}
-                          onClick={() => handleIssue(book)}
-                          className="p-2 bg-white/90 hover:bg-white text-blue-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
-                        >
-                          <BookOpen
-                            className="transform hover:scale-110 transition-transform"
-                            size={16}
-                          />
-                        </Button>
-                        <UncontrolledTooltip
-                          target={`issue-${book._id}`}
-                          placement="top"
-                        >
-                          <span className="text-white">Issue Book</span>
-                        </UncontrolledTooltip>
-                      </div> */}
                     </div>
                   </div>
                 </div>
                 <div className="p-4">
                   <div className="space-y-2">
                     <p className="text-gray-600">
-                      <span className="font-semibold">Author:</span>{" "}
+                      <span className="font-semibold">Author:</span>
                       {book.author}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-semibold">Publisher:</span>{" "}
+                      <span className="font-semibold">Publisher:</span>
                       {book.publisher}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-semibold">Published:</span>{" "}
+                      <span className="font-semibold">Published:</span>
                       {new Date(
                         parseInt(book.publishDate)
                       ).toLocaleDateString()}
@@ -213,7 +166,11 @@ const Index = () => {
         modalOpen={isEditModalOpen}
         title={selectedBook ? "Edit Book" : "Add Book"}
       >
-        <AddBook bookData={selectedBook} isEdit={isEdit} onSuccess={toggleEditModal} />
+        <AddBook
+          bookData={selectedBook}
+          isEdit={isEdit}
+          onSuccess={toggleEditModal}
+        />
       </Modal>
     </div>
   );

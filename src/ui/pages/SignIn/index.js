@@ -200,7 +200,7 @@ const Index = () => {
               type="submit"
               color="primary"
               block
-              className="w-full py-3 text-white font-medium rounded-lg bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full py-3 text-white font-medium rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               Sign In
             </Button>

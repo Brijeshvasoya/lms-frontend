@@ -4,7 +4,6 @@ import { ChevronDown, Eye, Trash, Edit } from "react-feather";
 import Switch from "react-switch";
 
 import "react-perfect-scrollbar/dist/css/styles.css";
-import _ from "lodash";
 
 const Table = ({
   columns,

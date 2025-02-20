@@ -1,4 +1,4 @@
-import React, { memo, useEffect, Suspense, useState } from "react";
+import React, { memo, useEffect, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { routes } from "./Routes";
 import Navbar from "../ui/components/Navbar";

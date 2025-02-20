@@ -1,6 +1,5 @@
 import React, { useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch} from "react-redux";
 import { Menu, User, Power } from "react-feather";
 import {
   Dropdown,
@@ -42,7 +41,7 @@ const UserDropdown = (props) => {
           <Menu />
         </DropdownToggle>
         {dropdownOpen && (
-          <DropdownMenu className=" w-28 text-black text-center bg-[#f3f2f0] rounded-lg shadow-lg mt-2 ">
+          <DropdownMenu className=" w-28 text-black text-center bg-white rounded-lg shadow-lg mt-2 ">
             <DropdownItem divider  />
             <DropdownItem
               onClick={() =>(role!=="admin")? navigate("/profile"):navigate("/admin-profile")}

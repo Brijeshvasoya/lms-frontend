@@ -102,10 +102,6 @@ const Index = () => {
       },
     })
       .then(({ data: responseData }) => {
-        const updatedUser = {
-          ...activeUser,
-          profilePicture: base64Url || activeUser?.profilePicture,
-        };
         setProfilePicture(base64Url || activeUser?.profilePicture);
         toast.success("Your Profile Updated Successfully", { autoClose: 1000 });
       })

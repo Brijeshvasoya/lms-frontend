@@ -27,6 +27,10 @@ const routes = [
     element: lazy(() => import('../../ui/pages/Dashboard')),
   },
   {
+    path:'/profile',
+    element: lazy(() => import('../../ui/pages/Profile')),
+  },
+  {
     path:'/users',
     element: lazy(() => import('../../ui/pages/User')),
     layout: 'admin',

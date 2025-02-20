@@ -1,11 +1,159 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { useQuery,useMutation } from "@apollo/client";
+import { Button, UncontrolledTooltip } from "reactstrap";
+import { Heart, BookOpen } from "react-feather";
+import Spinner from "../../components/Spinner";
+import { GET_BOOKS } from "../AdminDashboard/query";
+import { ADD_WISH_LIST } from "./mutation";
+import { toast } from "react-toastify";
+import dummyBookCover from "../../../assets/avatar-blank.png";
+import moment from "moment";
 
-const index = () => {
+const Index = () => {
+  const { loading, error, data} = useQuery(GET_BOOKS);
+  const [addWishList, { loading: addWishListLoading }] = useMutation(ADD_WISH_LIST,{
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  })
+  const [books, setBooks]= useState([]);
+
+  useEffect(() => {
+    if (data) {
+      setBooks(data.books);
+    }
+  }, [data]);
+
+  console.log(data,"data");
+  console.log(books,"books");
+  const handleWishlist = (book) => {
+    if(!book){
+      toast.error("Book not found", { autoClose: 2000 });
+      return;
+    }
+    addWishList({
+      variables: {
+        input: {
+          bookId: book?._id,
+        },
+      },
+    }).then(() => {
+      toast.success("Added to wishlist successfully", { autoClose: 1000 });
+    })
+    .catch((err) => {
+      toast.error(err?.message, { autoClose: 2000 });
+    })
+  };
+
+  const handleIssue = (book) => {
+    console.log("Issue book:", book);
+    toast.success("Book issued successfully", { autoClose: 1000 });
+  };
+
+  if (error) {
+    toast.error(error?.message, { autoClose: 2000 });
+  }
+
   return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  )
-}
+    <div className="container mx-auto px-4 py-6">
+      {loading||addWishListLoading ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <Spinner size={75} color="#ffffff" />
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl font-bold text-gray-800">Library Books</h1>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {books.map((book) => (
+              <div
+                key={book._id}
+                className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 transition-transform hover:scale-105"
+              >
+                <div className="relative h-64 group">
+                  <img
+                    src={book.coverImage || dummyBookCover}
+                    alt={book.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent group-hover:from-black/80 transition-all duration-300"></div>
 
-export default index
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-white font-bold text-lg truncate flex-1 mr-2">
+                        {book.title}
+                      </h3>
+
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Button
+                          id={`wishlist-${book._id}`}
+                          onClick={() => handleWishlist(book)}
+                          className="p-2 bg-white/90 hover:bg-white text-red-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
+                        >
+                          <Heart
+                            className="transform hover:scale-110 transition-transform"
+                            size={16}
+                          />
+                        </Button>
+                        <UncontrolledTooltip
+                          target={`wishlist-${book._id}`}
+                          placement="top"
+                        >
+                          <span className="text-white">Add to Wishlist</span>
+                        </UncontrolledTooltip>
+
+                        <Button
+                          id={`issue-${book._id}`}
+                          onClick={() => handleIssue(book)}
+                          className="p-2 bg-white/90 hover:bg-white text-blue-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
+                        >
+                          <BookOpen
+                            className="transform hover:scale-110 transition-transform"
+                            size={16}
+                          />
+                        </Button>
+                        <UncontrolledTooltip
+                          target={`issue-${book._id}`}
+                          placement="top"
+                        >
+                          <span className="text-white">Issue Book</span>
+                        </UncontrolledTooltip>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-2">
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Author:</span>{" "}
+                      {book.author}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Publisher:</span>{" "}
+                      {book.publisher}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Published:</span>{" "}
+                      {moment(book.publishDate).format("DD MMM YYYY")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {books.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No books found</p>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Index;
