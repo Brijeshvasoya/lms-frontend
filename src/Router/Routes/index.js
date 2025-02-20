@@ -31,6 +31,18 @@ const routes = [
     element: lazy(() => import('../../ui/pages/Profile')),
   },
   {
+    path:'/wishlist',
+    element: lazy(() => import('../../ui/pages/Wishlist')),
+  },
+  {
+    path:'/issue-book',
+    element: lazy(() => import('../../ui/pages/IssueBook')),
+  },
+  {
+    path:'/return-book',
+    element: lazy(() => import('../../ui/pages/ReturnBook')),
+  },
+  {
     path:'/users',
     element: lazy(() => import('../../ui/pages/User')),
     layout: 'admin',

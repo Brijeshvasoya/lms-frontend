@@ -1,50 +1,68 @@
 import React, { useState, useEffect } from "react";
-import { useQuery,useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { Button, UncontrolledTooltip } from "reactstrap";
 import { Heart, BookOpen } from "react-feather";
 import Spinner from "../../components/Spinner";
 import { GET_BOOKS } from "../AdminDashboard/query";
+import { GET_WISHLIST } from "./query";
 import { ADD_WISH_LIST } from "./mutation";
 import { toast } from "react-toastify";
 import dummyBookCover from "../../../assets/avatar-blank.png";
 import moment from "moment";
 
 const Index = () => {
-  const { loading, error, data} = useQuery(GET_BOOKS);
-  const [addWishList, { loading: addWishListLoading }] = useMutation(ADD_WISH_LIST,{
+  const { loading, error, data } = useQuery(GET_BOOKS);
+  const [addWishList] = useMutation(ADD_WISH_LIST, {
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
-  })
-  const [books, setBooks]= useState([]);
+  });
+
+  const { loading: wishListLoading, error: wishListError, data: wishListData,refetch } = useQuery(GET_WISHLIST, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  });
+
+  const [books, setBooks] = useState([]);
+  const [wishListBooks, setWishListBooks] = useState([]);
 
   useEffect(() => {
     if (data) {
       setBooks(data.books);
     }
-  }, [data]);
+    if (wishListData) {
+      setWishListBooks(wishListData.wishlists);
+    }
+  }, [data, wishListData]);
 
-  console.log(data,"data");
-  console.log(books,"books");
+  const isBookInWishlist = (bookId) => {
+    return wishListBooks.some((wishlist) => wishlist.book._id === bookId);
+  };
+
   const handleWishlist = (book) => {
-    if(!book){
+    if (!book) {
       toast.error("Book not found", { autoClose: 2000 });
       return;
     }
     addWishList({
       variables: {
         input: {
-          bookId: book?._id,
+          bookId: book._id,
         },
       },
-    }).then(() => {
-      toast.success("Added to wishlist successfully", { autoClose: 1000 });
     })
-    .catch((err) => {
-      toast.error(err?.message, { autoClose: 2000 });
-    })
+      .then(() => {
+        toast.success("Book added to wishlist", { autoClose: 1000 });
+        refetch();
+      })
+      .catch((err) => {
+        toast.error(err?.message, { autoClose: 2000 });
+      });
   };
 
   const handleIssue = (book) => {
@@ -52,15 +70,15 @@ const Index = () => {
     toast.success("Book issued successfully", { autoClose: 1000 });
   };
 
-  if (error) {
+  if (error || wishListError) {
     toast.error(error?.message, { autoClose: 2000 });
   }
 
   return (
     <div className="container mx-auto px-4 py-6">
-      {loading||addWishListLoading ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <Spinner size={75} color="#ffffff" />
+      {loading || wishListLoading ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <Spinner size={75} color="#4169E1" />
         </div>
       ) : (
         <>
@@ -89,23 +107,6 @@ const Index = () => {
 
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Button
-                          id={`wishlist-${book._id}`}
-                          onClick={() => handleWishlist(book)}
-                          className="p-2 bg-white/90 hover:bg-white text-red-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
-                        >
-                          <Heart
-                            className="transform hover:scale-110 transition-transform"
-                            size={16}
-                          />
-                        </Button>
-                        <UncontrolledTooltip
-                          target={`wishlist-${book._id}`}
-                          placement="top"
-                        >
-                          <span className="text-white">Add to Wishlist</span>
-                        </UncontrolledTooltip>
-
-                        <Button
                           id={`issue-${book._id}`}
                           onClick={() => handleIssue(book)}
                           className="p-2 bg-white/90 hover:bg-white text-blue-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
@@ -121,6 +122,24 @@ const Index = () => {
                         >
                           <span className="text-white">Issue Book</span>
                         </UncontrolledTooltip>
+
+                        <Button
+                          id={`wishlist-${book._id}`}
+                          onClick={() => handleWishlist(book)}
+                          disabled={isBookInWishlist(book._id)}
+                          className={`p-2 bg-white/90 hover:bg-white ${
+                            isBookInWishlist(book._id)
+                              ? "text-red-600 opacity-50"
+                              : "text-gray-400"
+                          } rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl`}
+                        >
+                          <Heart
+                            className={`transform hover:scale-110 transition-transform ${
+                              isBookInWishlist(book._id) ? "fill-current" : ""
+                            }`}
+                            size={16}
+                          />
+                        </Button>
                       </div>
                     </div>
                   </div>

@@ -3,7 +3,7 @@ import { ClipLoader } from 'react-spinners';
 
 const Spinner = ({
   size = 50,
-  color = '#007bff',
+  color = '#4169E1',
   loading = true,
   className = '',
   zIndex = 9999,
@@ -19,7 +19,7 @@ const Spinner = ({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: zIndex,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Optional: semi-transparent background
+    // backgroundColor: 'rgba(255, 255, 255, 0.5)', // Optional: semi-transparent background
   };
 
   return (

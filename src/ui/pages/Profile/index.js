@@ -15,7 +15,7 @@ import { DELETE_USER } from "../User/mutation";
 
 const Index = () => {
   const navigate = useNavigate();
-  const activeUser=JSON.parse(localStorage.getItem("active_user"));
+  const activeUser = JSON.parse(localStorage.getItem("active_user"));
   const [base64Url, setBase64Url] = useState("");
   const [cancel, setCancel] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -117,31 +117,32 @@ const Index = () => {
       "You won't be able to revert this!",
       "Yes, delete it!",
       true
-    ).then((result) => {
-      if (result.isConfirmed) {
-        ConfirmationModal(
-          "success",
-          "Deleted!",
-          "Your Profile Photo is Removed",
-          "ok",
-          false
-        ).then(() => {
-          const updatedUser = { ...activeUser, profilePicture: null };
-          localStorage.setItem("active_user", JSON.stringify(updatedUser));
-          setBase64Url(null);
-          setProfilePicture(null);
-          setCancel(false);
-          const fileInput = document.getElementById("upload-image");
-          if (fileInput) {
-            fileInput.value = "";
-          }
-          toast.success("Your Profile Photo is Removed", { autoClose: 1000 });
-        });
-      }
-    })
-    .catch((error) => {
-      toast.error(error?.message, { autoClose: 2000 });
-    });
+    )
+      .then((result) => {
+        if (result.isConfirmed) {
+          ConfirmationModal(
+            "success",
+            "Deleted!",
+            "Your Profile Photo is Removed",
+            "ok",
+            false
+          ).then(() => {
+            const updatedUser = { ...activeUser, profilePicture: null };
+            localStorage.setItem("active_user", JSON.stringify(updatedUser));
+            setBase64Url(null);
+            setProfilePicture(null);
+            setCancel(false);
+            const fileInput = document.getElementById("upload-image");
+            if (fileInput) {
+              fileInput.value = "";
+            }
+            toast.success("Your Profile Photo is Removed", { autoClose: 1000 });
+          });
+        }
+      })
+      .catch((error) => {
+        toast.error(error?.message, { autoClose: 2000 });
+      });
   };
 
   const handleCancel = () => {
@@ -185,8 +186,8 @@ const Index = () => {
 
   if (loading || deleteLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <Spinner size={75} color="#ffffff" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <Spinner size={75} color="#4169E1" />
       </div>
     );
   }
@@ -267,7 +268,9 @@ const Index = () => {
                 )}
               />
               {errors.fname && (
-                <FormText className="text-red-500 text-sm mt-1">{errors.fname.message}</FormText>
+                <FormText className="text-red-500 text-sm mt-1">
+                  {errors.fname.message}
+                </FormText>
               )}
             </div>
             <div>
@@ -292,7 +295,9 @@ const Index = () => {
                 )}
               />
               {errors.lname && (
-                <FormText className="text-red-500 text-sm mt-1">{errors.lname.message}</FormText>
+                <FormText className="text-red-500 text-sm mt-1">
+                  {errors.lname.message}
+                </FormText>
               )}
             </div>
             <div>
@@ -317,7 +322,9 @@ const Index = () => {
                 )}
               />
               {errors.dob && (
-                <FormText className="text-red-500 text-sm mt-1">{errors.dob.message}</FormText>
+                <FormText className="text-red-500 text-sm mt-1">
+                  {errors.dob.message}
+                </FormText>
               )}
             </div>
             <div>
@@ -348,7 +355,9 @@ const Index = () => {
                 )}
               />
               {errors.email && (
-                <FormText className="text-red-500 text-sm mt-1">{errors.email.message}</FormText>
+                <FormText className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </FormText>
               )}
             </div>
             <div>

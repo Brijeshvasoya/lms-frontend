@@ -43,7 +43,7 @@ const Index = () => {
       })
         .then(async ({ data }) => {
           if (rememberMe) {
-            const userEmail = data?.signInUser?.user?.email;  
+            const userEmail = data?.signInUser?.user?.email;
             setCookie("remember", JSON.stringify(userEmail));
           }
           if (data?.signInUser?.token) {
@@ -70,8 +70,8 @@ const Index = () => {
   return (
     <div className="flex h-screen container">
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <Spinner size={75} color="#ffffff" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <Spinner size={75} color="#4169E1" />
         </div>
       )}
       <div className="w-1/2 flex flex-col justify-start items-start p-8">

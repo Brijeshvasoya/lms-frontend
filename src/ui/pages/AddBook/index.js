@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Label, Button, Input, FormText } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { useMutation,useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import DatePicker from "../../components/DatePicker";
 import { Camera } from "react-feather";
@@ -24,7 +24,7 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
     formState: { errors },
   } = useForm();
 
-  const {refetch} = useQuery(GET_BOOKS);
+  const { refetch } = useQuery(GET_BOOKS);
 
   const [addBook, { loading: addBookLoading }] = useMutation(ADD_BOOK, {
     context: {
@@ -34,13 +34,16 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
     },
   });
 
-  const [updateBook, { loading: updateBookLoading }] = useMutation(UPDATE_BOOK, {
-    context: {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const [updateBook, { loading: updateBookLoading }] = useMutation(
+    UPDATE_BOOK,
+    {
+      context: {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       },
-    },
-  });
+    }
+  );
 
   useEffect(() => {
     setLoading(addBookLoading || updateBookLoading);
@@ -128,24 +131,28 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
   };
 
   return (
-    <div className={`${isEdit ? 'w-full' : 'container mx-auto px-4 py-6'}`}>
+    <div className={`${isEdit ? "w-full" : "container mx-auto px-4 py-6"}`}>
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <Spinner size={75} color="#ffffff" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <Spinner size={75} color="#4169E1" />
         </div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={`bg-white ${!isEdit && 'p-6 rounded-xl shadow-lg border border-gray-100'}`}>
+        <div
+          className={`bg-white ${
+            !isEdit && "p-6 rounded-xl shadow-lg border border-gray-100"
+          }`}
+        >
           {!isEdit && (
             <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
               Add New Book
             </h3>
           )}
 
-          <div className={`${isEdit ? 'flex gap-6' : 'space-y-6'}`}>
+          <div className={`${isEdit ? "flex gap-6" : "space-y-6"}`}>
             {/* Image Upload Section */}
-            <div className={`${isEdit ? 'w-1/3' : 'w-full'}`}>
+            <div className={`${isEdit ? "w-1/3" : "w-full"}`}>
               <div className="flex justify-center mb-4">
                 <div className="relative">
                   <img
@@ -171,7 +178,7 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
             </div>
 
             {/* Form Fields Section */}
-            <div className={`${isEdit ? 'w-2/3' : 'w-full'}`}>
+            <div className={`${isEdit ? "w-2/3" : "w-full"}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label
@@ -264,7 +271,7 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
                   <Controller
                     name="publishDate"
                     control={control}
-                    rules={{    
+                    rules={{
                       required: "Date of Birth is required",
                     }}
                     render={({ field: { onChange, value } }) => {
