@@ -31,17 +31,17 @@ const UserDropdown = (props) => {
   const toggle = () => setDropdownOpen(!dropdownOpen);
 
   return (
-    <div>
+    <div className="relative z-50">
       <Dropdown isOpen={dropdownOpen} toggle={toggle}>
         <DropdownToggle
           className="flex items-center space-x-2 px-4 py-2 text-white bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg hover: transition-all"
           caret
         >
-          <span>{user?.role}</span>
+          <span>{(user?.role)?.toUpperCase()}</span>
           <Menu />
         </DropdownToggle>
         {dropdownOpen && (
-          <DropdownMenu className=" w-28 text-black text-center bg-white rounded-lg shadow-lg mt-2 ">
+          <DropdownMenu className="absolute right-0 w-28 text-black text-center bg-white rounded-lg shadow-lg mt-2 ">
             <DropdownItem divider  />
             <DropdownItem
               onClick={() =>(role!=="admin")? navigate("/profile"):navigate("/admin-profile")}

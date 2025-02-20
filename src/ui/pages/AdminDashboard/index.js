@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Button } from "reactstrap";
 import { Edit, Trash } from "react-feather";
+import moment from "moment";
 import Spinner from "../../components/Spinner";
 import Modal from "../../components/Modal";
 import { GET_BOOKS } from "./query";
@@ -41,11 +42,9 @@ const Index = () => {
   };
 
   const toggleEditModal = () => {
-    setIsEditModalOpen(!isEditModalOpen);
-    if (isEditModalOpen) {
-      setSelectedBook(null);
-      setIsEdit(false);
-    }
+    setIsEditModalOpen(false);
+    setSelectedBook(null);
+    setIsEdit(false);
   };
 
   const handleDelete = (book) => {
@@ -80,6 +79,12 @@ const Index = () => {
     console.log("Delete book:", book);
   };
 
+  const handleAddNew = () => {
+    setSelectedBook(null);
+    setIsEdit(false);
+    setIsEditModalOpen(true);
+  };
+
   if (error) {
     toast.error(error?.message, { autoClose: 2000 });
   }
@@ -94,6 +99,16 @@ const Index = () => {
         <>
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-800">Library Books</h1>
+            <Button
+              onClick={handleAddNew}
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2 z-0"
+            >
+              <span className="text-lg font-medium">Add New Book</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {books.map((book) => (
@@ -129,9 +144,7 @@ const Index = () => {
                     </p>
                     <p className="text-gray-600">
                       <span className="font-semibold">Published:</span>
-                      {new Date(
-                        parseInt(book.publishDate)
-                      ).toLocaleDateString()}
+                      {moment(book.publishDate).format("DD MMM YYYY")}
                     </p>
                   </div>
                   <div className="mt-4 flex justify-end space-x-2">
@@ -160,18 +173,20 @@ const Index = () => {
           )}
         </>
       )}
-      <Modal
-        isOpen={isEditModalOpen}
-        toggle={toggleEditModal}
-        modalOpen={isEditModalOpen}
-        title={selectedBook ? "Edit Book" : "Add Book"}
-      >
-        <AddBook
-          bookData={selectedBook}
-          isEdit={isEdit}
-          onSuccess={toggleEditModal}
-        />
-      </Modal>
+      {isEditModalOpen && (
+        <Modal
+          isOpen={isEditModalOpen}
+          toggle={toggleEditModal}
+          modalOpen={isEditModalOpen}
+          title={selectedBook ? "Edit Book" : "Add Book"}
+        >
+          <AddBook
+            bookData={selectedBook}
+            isEdit={isEdit}
+            onSuccess={toggleEditModal}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

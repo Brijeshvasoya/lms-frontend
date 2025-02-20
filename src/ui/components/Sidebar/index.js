@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, Users, BookOpen, Book, Package } from "react-feather";
+import { Home, Users, Book, Package } from "react-feather";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 
@@ -10,7 +10,6 @@ const Index = () => {
   
   const AdminsidebarItems = [
     { icon: <Home className="w-6 h-6" />, label: "Dashboard", path: "/admin-dashboard" },
-    { icon: <BookOpen className="w-6 h-6" />, label: "Add Book", path: "/add-book" },
     { icon: <Users className="w-6 h-6" />, label: "Users", path: "/users" },
   ];
   

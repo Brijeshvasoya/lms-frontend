@@ -12,7 +12,7 @@ import Spinner from "../../components/Spinner";
 import { ADD_BOOK, UPDATE_BOOK } from "./mutation";
 import { GET_BOOKS } from "../AdminDashboard/query";
 
-const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
+const Index = ({ bookData, isEdit, onSuccess}) => {
   const navigate = useNavigate();
   const [base64Url, setBase64Url] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
         title: bookData.title,
         author: bookData.author,
         publisher: bookData.publisher,
-        publishDate: new Date(parseInt(bookData.publishDate)),
+        publishDate: moment(bookData.publishDate).format("YYYY-MM-DD"),
       });
     }
   }, [isEdit, bookData, reset]);
@@ -131,7 +131,7 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
   };
 
   return (
-    <div className={`${isEdit ? "w-full" : "container mx-auto px-4 py-6"}`}>
+    <div className={`${isEdit ? "w-full" : "container mx-auto px-4 py-8"}`}>
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <Spinner size={75} color="#4169E1" />
@@ -139,51 +139,51 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div
-          className={`bg-white ${
-            !isEdit && "p-6 rounded-xl shadow-lg border border-gray-100"
-          }`}
-        >
+        <div className={`bg-white ${!isEdit && "p-8 rounded-2xl shadow-xl border border-gray-100"}`}>
           {!isEdit && (
-            <h3 className="text-xl font-bold text-gray-800 mb-6 pb-2 border-b border-gray-200">
-              Add New Book
-            </h3>
+            <div className="mb-8 text-center">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Add New Book
+              </h3>
+              <p className="text-gray-500 mt-2">Fill in the details to add a new book to the library</p>
+            </div>
           )}
 
-          <div className={`${isEdit ? "flex gap-6" : "space-y-6"}`}>
-            {/* Image Upload Section */}
-            <div className={`${isEdit ? "w-1/3" : "w-full"}`}>
-              <div className="flex justify-center mb-4">
-                <div className="relative">
-                  <img
-                    src={base64Url || dummyBookCover}
-                    alt="Book Cover"
-                    className="w-48 h-64 object-cover rounded-lg shadow-md border-2 border-gray-200"
-                  />
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="cover-image"
-                  />
-                  <Label
-                    htmlFor="cover-image"
-                    className="cursor-pointer absolute bottom-2 right-2 bg-blue-500 hover:bg-blue-600 rounded-full p-2 transition-colors"
-                  >
-                    <Camera className="h-5 w-5 text-white" />
-                  </Label>
+          <div className={`${isEdit ? "flex gap-8" : "flex flex-col md:flex-row gap-8"}`}>
+            <div className={`${isEdit ? "w-1/3" : "w-full md:w-1/3"}`}>
+              <div className="flex justify-center">
+                <div className="relative group -top-4">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
+                  <div className="relative">
+                    <img
+                      src={base64Url || dummyBookCover}
+                      alt="Book Cover"
+                      className="w-48 h-64 object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="cover-image"
+                    />
+                    <Label
+                      htmlFor="cover-image"
+                      className="cursor-pointer absolute bottom-3 right-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full p-3 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl"
+                    >
+                      <Camera className="h-5 w-5 text-white" />
+                    </Label>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Form Fields Section */}
-            <div className={`${isEdit ? "w-2/3" : "w-full"}`}>
+            <div className={`${isEdit ? "w-2/3" : "w-full md:w-2/3"}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+                <div className="space-y-1">
                   <Label
                     htmlFor="title"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
+                    className="text-sm font-semibold text-gray-700 block"
                   >
                     Book Title<span className="text-red-500 ml-1">*</span>
                   </Label>
@@ -196,21 +196,21 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
                         {...field}
                         type="text"
                         placeholder="Enter book title"
-                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                       />
                     )}
                   />
                   {errors.title && (
-                    <FormText className="text-red-500 text-sm mt-1">
+                    <FormText className="text-red-500 text-xs">
                       {errors.title.message}
                     </FormText>
                   )}
                 </div>
 
-                <div>
+                <div className="space-y-1">
                   <Label
                     htmlFor="author"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
+                    className="text-sm font-semibold text-gray-700 block"
                   >
                     Author<span className="text-red-500 ml-1">*</span>
                   </Label>
@@ -223,21 +223,21 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
                         {...field}
                         type="text"
                         placeholder="Enter author name"
-                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                       />
                     )}
                   />
                   {errors.author && (
-                    <FormText className="text-red-500 text-sm mt-1">
+                    <FormText className="text-red-500 text-xs">
                       {errors.author.message}
                     </FormText>
                   )}
                 </div>
 
-                <div>
+                <div className="space-y-1">
                   <Label
                     htmlFor="publisher"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
+                    className="text-sm font-semibold text-gray-700 block"
                   >
                     Publisher<span className="text-red-500 ml-1">*</span>
                   </Label>
@@ -250,21 +250,21 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
                         {...field}
                         type="text"
                         placeholder="Enter publisher name"
-                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                       />
                     )}
                   />
                   {errors.publisher && (
-                    <FormText className="text-red-500 text-sm mt-1">
+                    <FormText className="text-red-500 text-xs">
                       {errors.publisher.message}
                     </FormText>
                   )}
                 </div>
 
-                <div>
+                <div className="space-y-1">
                   <Label
                     htmlFor="publishDate"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
+                    className="text-sm font-semibold text-gray-700 block"
                   >
                     Publish Date<span className="text-red-500 ml-1">*</span>
                   </Label>
@@ -272,46 +272,44 @@ const Index = ({ bookData = null, isEdit = false, onSuccess = () => {} }) => {
                     name="publishDate"
                     control={control}
                     rules={{
-                      required: "Date of Birth is required",
+                      required: "Publish date is required",
                     }}
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <DatePicker
-                          max={moment()._d}
-                          placeholder="Enter Date of Birth"
-                          invalid={!!errors?.publishDate}
-                          onChange={(e) => onChange(e[0])}
-                          className={`mt-2 p-3 w-full rounded-lg border ${
-                            errors?.publishDate
-                              ? "border-red-500 focus:ring-red-500"
-                              : "border-gray-300 focus:ring-indigo-500"
-                          } focus:outline-none focus:ring-2`}
-                          value={value}
-                        />
-                      );
-                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <DatePicker
+                        max={moment()._d}
+                        placeholder="Select publish date"
+                        invalid={!!errors?.publishDate}
+                        onChange={(e) => onChange(e[0])}
+                        className={`w-full px-4 py-2.5 rounded-lg border ${
+                          errors?.publishDate
+                            ? "border-red-500 focus:ring-red-200"
+                            : "border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        } transition-all duration-200`}
+                        value={value}
+                      />
+                    )}
                   />
                   {errors.publishDate && (
-                    <FormText className="text-red-500 text-sm mt-1">
+                    <FormText className="text-red-500 text-xs">
                       {errors.publishDate.message}
                     </FormText>
                   )}
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-4 mt-6">
+              <div className="flex justify-end space-x-4 mt-8">
                 <Button
                   type="button"
                   color="secondary"
                   onClick={handleCancel}
-                  className="px-6 py-2.5 text-white font-medium rounded-lg bg-gray-500 hover:bg-gray-600 transition-colors focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="px-6 py-2.5 text-sm font-medium rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   color="primary"
-                  className="px-6 py-2.5 text-white font-medium rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                  className="px-6 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02]"
                 >
                   {isEdit ? "Update Book" : "Add Book"}
                 </Button>

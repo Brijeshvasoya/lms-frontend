@@ -3,6 +3,7 @@ import NavbarUser from "./NavbarUser";
 
 const Index = () => {
   const activeUser = JSON.parse(localStorage.getItem("active_user"));
+  const role = activeUser?.role;
 
   return (
     <Fragment>
@@ -13,7 +14,7 @@ const Index = () => {
           </h1>
         </div>
         <div>
-          <NavbarUser />
+          <NavbarUser role={role}/>
         </div>
       </div>
     </Fragment>
