@@ -9,7 +9,7 @@ import { useMutation } from "@apollo/client";
 import ConfirmationModal from "../../components/Alert";
 import Spinner from "../../components/Spinner";
 import DatePicker from "../../components/DatePicker";
-import dummyImg from "../../../assets/avatar-blank.png";
+import dummyImg from "../../../assets/avatar-blank (2).png";
 import { UPDATE_PROFILE } from "./mutation";
 import { DELETE_USER } from "../User/mutation";
 
@@ -101,7 +101,7 @@ const Index = () => {
         userData: newDetail,
       },
     })
-      .then(({ data: responseData }) => {
+      .then(() => {
         setProfilePicture(base64Url || activeUser?.profilePicture);
         toast.success("Your Profile Updated Successfully", { autoClose: 1000 });
       })

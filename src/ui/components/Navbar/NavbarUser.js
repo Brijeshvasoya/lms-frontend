@@ -10,7 +10,7 @@ const NavbarUser = ({role}) => {
     <ul className="flex justify-between items-center space-x-6">
       {role !== "admin" && (
         <div>
-          <Heart className="w-6 h-6 cursor-pointer" onClick={() => navigate("/wishlist")} />
+          <Heart className="w-6 h-6 cursor-pointer hover:text-red-600" onClick={() => navigate("/wishlist")} />
         </div>
       )}
       <NavItem>

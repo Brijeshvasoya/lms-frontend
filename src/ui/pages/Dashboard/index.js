@@ -2,18 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Button, UncontrolledTooltip } from "reactstrap";
 import { Heart, BookOpen } from "react-feather";
+import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import { GET_ISSUED_BOOKS } from "../ReturnBooks/query";
 import Spinner from "../../components/Spinner";
 import { GET_BOOKS } from "../AdminDashboard/query";
 import { GET_WISHLIST } from "./query";
 import { ADD_WISH_LIST } from "./mutation";
 import { toast } from "react-toastify";
 import dummyBookCover from "../../../assets/avatar-blank.png";
-import moment from "moment";
-import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate=useNavigate()
   const { loading, error, data } = useQuery(GET_BOOKS);
+  const {data: issuedData} = useQuery(GET_ISSUED_BOOKS, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  })
+  console.log(issuedData?.BookIssuer)
   const [addWishList] = useMutation(ADD_WISH_LIST, {
     context: {
       headers: {
@@ -32,6 +41,7 @@ const Index = () => {
 
   const [books, setBooks] = useState([]);
   const [wishListBooks, setWishListBooks] = useState([]);
+  const [issuedBooks, setIssuedBooks] = useState([]);
 
   useEffect(() => {
     if (data) {
@@ -39,13 +49,19 @@ const Index = () => {
     }
     if (wishListData) {
       setWishListBooks(wishListData.wishlists);
+    } 
+    if (issuedData) {
+      setIssuedBooks(issuedData.BookIssuer);
     }
-  }, [data, wishListData]);
+  }, [data, wishListData, issuedData]);
 
   const isBookInWishlist = (bookId) => {
     return wishListBooks.some((wishlist) => wishlist.book._id === bookId);
   };
 
+  const isIssued = (bookId) => {
+    return issuedBooks.some((issue) => issue.bookid._id === bookId);
+  }
   const handleWishlist = (book) => {
     if (!book) {
       toast.error("Book not found", { autoClose: 2000 });
@@ -107,22 +123,31 @@ const Index = () => {
                       </h3>
 
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Button
+                      <Button
                           id={`issue-${book._id}`}
                           onClick={() => handleIssue(book)}
-                          className="p-2 bg-white/90 hover:bg-white text-blue-500 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl"
+                          disabled={isIssued(book._id)}
+                          className={`p-2 bg-white/90 hover:bg-white ${
+                            isIssued(book._id)
+                              ? "text-red-600 opacity-50"
+                              : "text-gray-400"
+                          } rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 hover:shadow-xl`}
                         >
                           <BookOpen
-                            className="transform hover:scale-110 transition-transform"
+                            className={`transform hover:scale-110 transition-transform ${
+                              isIssued(book._id) ? "fill-current" : ""
+                            }`}
                             size={16}
                           />
                         </Button>
-                        <UncontrolledTooltip
-                          target={`issue-${book._id}`}
-                          placement="top"
-                        >
-                          <span className="text-white">Issue Book</span>
-                        </UncontrolledTooltip>
+                        {!isIssued(book._id) && (
+                          <UncontrolledTooltip
+                            target={`issue-${book._id}`}
+                            placement="top"
+                          >
+                            <span className="text-white">Issue Book</span>
+                          </UncontrolledTooltip>
+                        )}
 
                         <Button
                           id={`wishlist-${book._id}`}

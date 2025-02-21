@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
+import { Form, Label, Button } from "reactstrap";
+import { Book, Calendar, ArrowLeft } from "react-feather";
+import moment from "moment";
 import { ISSUE_BOOK } from "./mutation";
 import { GET_BOOK } from "./query";
-import { Form, Label, Button } from "reactstrap";
+import { GET_BOOKS } from "../AdminDashboard/query";
+import { GET_ISSUED_BOOKS } from "../ReturnBooks/query";
 import Spinner from "../../components/Spinner";
-import moment from "moment";
 import DatePicker from "../../components/DatePicker";
 import { toast } from "react-toastify";
-import { Book, Calendar, ArrowLeft } from "react-feather";
 
 const Index = () => {
   const navigate = useNavigate();
   const active_user = JSON.parse(localStorage.getItem("active_user"));
   const { id } = useParams();
-  const { data, loading, error } = useQuery(GET_BOOK, { variables: { id } });
-  const [issueBook, { loading: issuingBook }] = useMutation(ISSUE_BOOK, {
-    onError: (error) => {
-      toast.error(error.message);
+  const { data, loading } = useQuery(GET_BOOK, { variables: { id } });
+  const { refetch } = useQuery(GET_ISSUED_BOOKS, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     },
   });
+  const { refetch: refetchBooks } = useQuery(GET_BOOKS);
+  const [issueBook, { loading: issuingBook }] = useMutation(ISSUE_BOOK);
   const [returnDate, setReturnDate] = useState(null);
   const [book, setBook] = useState(null);
 
@@ -35,7 +41,7 @@ const Index = () => {
       toast.error("Please select a return date");
       return;
     }
-    await issueBook({
+    issueBook({
       variables: {
         input: {
           bookid: id,
@@ -51,6 +57,8 @@ const Index = () => {
     })
       .then(() => {
         toast.success("Book issued successfully!");
+        refetch();
+        refetchBooks();
         navigate(-1);
       })
       .catch((err) => {
@@ -62,16 +70,6 @@ const Index = () => {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <Spinner size={75} color="#4169E1" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80">
-        <div className="text-center">
-          <p className="mt-2 text-sm text-gray-600">{error?.message}</p>
-        </div>
       </div>
     );
   }

@@ -40,11 +40,7 @@ const routes = [
   },
   {
     path:'/return-book',
-    element: lazy(() => import('../../ui/pages/ReturnBook')),
-  },
-  {
-    path:'/issued-books',
-    element: lazy(() => import('../../ui/pages/IssuedBooks')),
+    element: lazy(() => import('../../ui/pages/ReturnBooks')),
   },
   {
     path:'/users',

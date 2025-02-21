@@ -1,9 +1,10 @@
 import React from "react";
 import { Home, Users, Book } from "react-feather";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 
 const Index = () => {
+  const navigate = useNavigate();
   const active_user = JSON.parse(localStorage.getItem("active_user"));
   const role = active_user?.role;
   const location = useLocation();
@@ -15,8 +16,7 @@ const Index = () => {
   
   const UsersidebarItems = [
     { icon: <Home className="w-6 h-6" />, label: "Dashboard", path: "/dashboard" },
-    { icon: <Book className="w-6 h-6" />, label: "Issued Books", path: "/issued-books" },
-    // { icon: <Package className="w-6 h-6" />, label: "Return Book", path: "/return-book" },
+    { icon: <Book className="w-6 h-6" />, label: "Return Books", path: "/return-book" },
   ];
 
   const renderSidebarItems = (items) => (
@@ -55,7 +55,8 @@ const Index = () => {
           <img 
             src={logo} 
             alt="Logo" 
-            className="h-16 w-auto transform transition-transform duration-300 hover:scale-110" 
+            className="h-16 w-auto transform transition-transform duration-300 cursor-pointer hover:scale-110"
+            onClick={() => navigate(`${role==="admin"?'/admin-dashboard':'/dashboard'}`)} 
           />
         </div>
         
