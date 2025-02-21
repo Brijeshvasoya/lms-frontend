@@ -9,8 +9,10 @@ import { ADD_WISH_LIST } from "./mutation";
 import { toast } from "react-toastify";
 import dummyBookCover from "../../../assets/avatar-blank.png";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate=useNavigate()
   const { loading, error, data } = useQuery(GET_BOOKS);
   const [addWishList] = useMutation(ADD_WISH_LIST, {
     context: {
@@ -66,8 +68,7 @@ const Index = () => {
   };
 
   const handleIssue = (book) => {
-    console.log("Issue book:", book);
-    toast.success("Book issued successfully", { autoClose: 1000 });
+    navigate(`/issue-book/${book._id}`);
   };
 
   if (error || wishListError) {

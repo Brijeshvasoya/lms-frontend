@@ -93,7 +93,7 @@ const Index = () => {
         ConfirmationModal(
           "success",
           "Deleted!",
-          "Employee has been deleted.",
+          "User has been deleted.",
           "ok",
           false
         ).then(() => {

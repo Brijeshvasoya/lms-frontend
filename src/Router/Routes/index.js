@@ -35,12 +35,16 @@ const routes = [
     element: lazy(() => import('../../ui/pages/Wishlist')),
   },
   {
-    path:'/issue-book',
+    path:'/issue-book/:id',
     element: lazy(() => import('../../ui/pages/IssueBook')),
   },
   {
     path:'/return-book',
     element: lazy(() => import('../../ui/pages/ReturnBook')),
+  },
+  {
+    path:'/issued-books',
+    element: lazy(() => import('../../ui/pages/IssuedBooks')),
   },
   {
     path:'/users',

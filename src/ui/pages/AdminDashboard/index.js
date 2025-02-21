@@ -76,7 +76,6 @@ const Index = () => {
         });
       }
     });
-    console.log("Delete book:", book);
   };
 
   const handleAddNew = () => {
