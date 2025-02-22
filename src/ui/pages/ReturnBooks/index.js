@@ -54,7 +54,6 @@ const Index = () => {
                 _id: id,
                 returnDate: returnDate.format("YYYY-MM-DD"),
                 panalty: parseInt(penalty),
-                panalty: parseInt(penalty),
               },
             },
           })
