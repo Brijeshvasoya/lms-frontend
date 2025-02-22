@@ -10,17 +10,19 @@ import ConfirmationModal from "../../components/Alert";
 import { GET_USER } from "./query";
 import { DELETE_USER, VERIFY_USER, DEACTIVE_USER } from "./mutation";
 import Spinner from "../../components/Spinner";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [dataLoading, setDataLoading] = useState(false);
 
   const {
     data: userData,
     loading,
     refetch,
   } = useQuery(GET_USER, {
+    fetchPolicy: "cache-and-network",
     variables: {
       searchTerm: searchTerm.trim() !== "" ? searchTerm : undefined,
     },
@@ -60,17 +62,12 @@ const Index = () => {
       setFilteredUsers([]);
       return;
     }
-
-    const nonAdminUsers = userData.users.filter(
-      (item) => item.role !== "admin"
-    );
-    const user = nonAdminUsers.map((user) => ({
+    const user = userData.users.map((user) => ({
       ...user,
       dob: user.dob ? moment(parseInt(user.dob)).format("DD MMM YYYY") : "N/A",
     }));
     setFilteredUsers(user);
-    setDataLoading(loading);
-  }, [userData, loading]);
+  }, [userData,loading]);
 
   const handleChange = (e) => {
     const term = e.target.value;
@@ -79,6 +76,7 @@ const Index = () => {
 
   const handleViewUser = (row) => {
     console.log(row?._id);
+    navigate(`/user-book/${row?._id}`);
   }
 
   const handleDeleteUser = (row) => {
@@ -154,7 +152,7 @@ const Index = () => {
     });
   };
 
-  if (dataLoading) {
+  if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <Spinner size={75} color="#4169E1" />

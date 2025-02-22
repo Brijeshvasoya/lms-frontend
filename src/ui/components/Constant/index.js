@@ -1,227 +1,105 @@
-export const eventTable = [
-    {
-      selector: (row) => row?.ename, 
-      name: "Event Name",
-      sortField: "ename",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.hname, 
-      name: "Host Name",
-      sortField: "hname",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.eventdate, 
-      name: "Event Date",
-      sortField: "eventdate",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.hno, 
-      name: "Address 1",
-      sortField: "hno",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.address, 
-      name: "Address 2",
-      sortField: "address",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.ticket?.vipticket, 
-      name: "VIP Ticket",
-      sortField: "vipticket",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.ticket?.vvipticket, 
-      name: "VVIP Ticket",
-      sortField: "vvipticket",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.ticket?.goldticket, 
-      name: "Gold Ticket",
-      sortField: "goldticket",
-      sortable: true,
-      minwidth: "100px",
-    },
-  ];
+export const userTable = [
+  {
+    selector: (row) => row?.fname,
+    name: "First Name",
+    sortField: "fname",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.lname,
+    name: "Last Name",
+    sortField: "lname",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.email,
+    name: "Email",
+    sortField: "email",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.age,
+    name: "Age",
+    sortField: "age",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.dob,
+    name: "Birth Date",
+    sortField: "dob",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.role,
+    name: "Role",
+    sortField: "role",
+    sortable: true,
+    minwidth: "150px",
+  },
+];
 
-  export const participateEventTable = [
-    {
-      selector: (row) => row?.eventId?.ename, 
-      name: "Event Name",
-      sortField: "ename",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.eventId?.hname, 
-      name: "Host Name",
-      sortField: "hname",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.eventId?.eventdate, 
-      name: "Event Date",
-      sortField: "eventdate",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.eventId?.hno, 
-      name: "Address 1",
-      sortField: "hno",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.eventId?.address, 
-      name: "Address 2",
-      sortField: "address",
-      sortable: true,
-      minwidth: "150px",
-    },
-    {
-      selector: (row) => row?.ticketType, 
-      name: "Ticket Type",
-      sortField: "ticketType",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.ticketQuantity, 
-      name: "Total Ticket",
-      sortField: "ticketQuantity",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.totalamount, 
-      name: "Total Amount",
-      sortField: "totalamount",
-      sortable: true,
-      minwidth: "100px",
-    },
-  ];
-  export const userParticipateEventTable = [
-    {
-      selector: (row) => `${row?.userId?.fname || ''} ${row?.userId?.lname || ''}`.trim(), 
-      name: "Name",
-      sortField: "fullName",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.eventId?.ename, 
-      name: "Event Name",
-      sortField: "ename",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.eventId?.hname, 
-      name: "Host Name",
-      sortField: "hname",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.eventId?.eventdate, 
-      name: "Event Date",
-      sortField: "eventdate",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.eventId?.hno, 
-      name: "Address 1",
-      sortField: "hno",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.eventId?.address, 
-      name: "Address 2",
-      sortField: "address",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.ticketType, 
-      name: "Ticket Type",
-      sortField: "tickettype",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.ticketQuantity, 
-      name: "Total Ticket",
-      sortField: "ticketQuantity",
-      sortable: true,
-      minwidth: "100px",
-    },
-    {
-      selector: (row) => row?.totalamount, 
-      name: "Total Amount",
-      sortField: "totalamount",
-      sortable: true,
-      minwidth: "100px",
-    },
-  ];
-  
-  export const userTable=[
-    {
-        selector:(row)=>row?.fname,
-        name:"First Name",
-        sortField:"fname",
-        sortable:true,
-        minwidth:"150px",
-    },
-    {
-        selector:(row)=>row?.lname,
-        name:"Last Name",
-        sortField:"lname",
-        sortable:true,
-        minwidth:"150px",
-    },
-    {
-        selector:(row)=>row?.email,
-        name:"Email",
-        sortField:"email",
-        sortable:true,
-        minwidth:"150px",
-    },
-    {
-        selector:(row)=>row?.age,
-        name:"Age",
-        sortField:"age",
-        sortable:true,
-        minwidth:"150px",
-    },
-    {
-        selector:(row)=>row?.dob,
-        name:"Birth Date",
-        sortField:"dob",
-        sortable:true,
-        minwidth:"150px",
-    },
-    {
-        selector:(row)=>row?.role,
-        name:"Role",
-        sortField:"role",
-        sortable:true,
-        minwidth:"150px",
-    }
-  ]
+export const userBookTable = [
+  {
+    selector: (row) => row?.bookid?.title,
+    name: "Book Title",
+    sortField: "bookid.title",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.bookid?.author,
+    name: "Author",
+    sortField: "bookid.author",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.issuedDate,
+    name: "Issued Date",
+    sortField: "issuedDate",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.bookToBeReturned,
+    name: "Book To Be Returned",
+    sortField: "bookToBeReturned",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.returnDate,
+    name: "Return Date",
+    sortField: "returnDate",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) => row?.panalty,
+    name: "Penalty",
+    sortField: "panalty",
+    sortable: true,
+    minwidth: "150px",
+  },
+  {
+    selector: (row) =>
+      row?.isReturned ? (
+        <span className="px-3 py-1 bg-green-500 text-white rounded-lg text-sm font-medium">
+          Returned
+        </span>
+      ) : (
+        <span className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm font-medium">
+          Not Returned
+        </span>
+      ),
+    name: "Status",
+    sortField: "isReturned",
+    sortable: true,
+    minWidth: "150px",
+  },
+];

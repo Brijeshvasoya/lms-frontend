@@ -11,6 +11,7 @@ import dummyBookCover from "../../../assets/avatar-blank.png";
 
 const Index = () => {
   const { data, loading, error, refetch } = useQuery(GET_WISHLIST, {
+    fetchPolicy: "network-only",
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

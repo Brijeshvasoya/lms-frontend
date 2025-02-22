@@ -32,6 +32,7 @@ const Index = () => {
   });
 
   const { loading: wishListLoading, error: wishListError, data: wishListData,refetch } = useQuery(GET_WISHLIST, {
+    fetchPolicy: "network-only",
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

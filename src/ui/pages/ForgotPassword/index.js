@@ -54,12 +54,17 @@ const ForgotPassword = () => {
         </div>
       )}
       <div className="w-1/2 flex flex-col justify-start items-start p-8">
+        <div className="flex">
         <img
           src={logo}
           alt="logo img"
           className="w-32 cursor-pointer "
           onClick={() => navigate("/")}
         />
+        <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-600 -ml-4">
+          LIBRIFY
+        </span>
+        </div>
         <img src={source} alt="cover img" className="w-full mt-4 h-4/5 mx-4" />
       </div>
 

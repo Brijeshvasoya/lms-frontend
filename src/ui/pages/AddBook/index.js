@@ -12,7 +12,7 @@ import Spinner from "../../components/Spinner";
 import { ADD_BOOK, UPDATE_BOOK } from "./mutation";
 import { GET_BOOKS } from "../AdminDashboard/query";
 
-const Index = ({ bookData, isEdit, onSuccess}) => {
+const Index = ({ bookData, isEdit, onSuccess, model }) => {
   const navigate = useNavigate();
   const [base64Url, setBase64Url] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,6 @@ const Index = ({ bookData, isEdit, onSuccess}) => {
       const reader = new FileReader();
       reader.onload = () => {
         setBase64Url(reader.result);
-        toast.success("Book cover uploaded successfully", { autoClose: 1000 });
       };
       reader.readAsDataURL(file);
     }
@@ -112,7 +111,8 @@ const Index = ({ bookData, isEdit, onSuccess}) => {
           setLoading(false);
           setBase64Url("");
           refetch();
-          navigate(-1);
+          onSuccess();
+          navigate("/admin-dashboard");
           reset();
         })
         .catch((err) => {
@@ -123,10 +123,10 @@ const Index = ({ bookData, isEdit, onSuccess}) => {
   };
 
   const handleCancel = () => {
-    if (isEdit) {
+    if(model){
       onSuccess();
-    } else {
-      navigate(-1);
+    }else{
+      navigate("/admin-dashboard");
     }
   };
 

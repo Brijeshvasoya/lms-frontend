@@ -102,8 +102,13 @@ const Index = () => {
       },
     })
       .then(() => {
+        const updatedUser = {
+          ...activeUser,
+          ...newDetail,
+        };
         setProfilePicture(base64Url || activeUser?.profilePicture);
         toast.success("Your Profile Updated Successfully", { autoClose: 1000 });
+        localStorage.setItem("active_user", JSON.stringify(updatedUser));
       })
       .catch((error) => {
         toast.error(error?.message, { autoClose: 2000 });

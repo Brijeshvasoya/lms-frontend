@@ -56,6 +56,11 @@ const routes = [
     path:'/add-book',
     element: lazy(() => import('../../ui/pages/AddBook')),
     layout: 'admin',
+  },
+  {
+    path:'/user-book/:id',
+    element: lazy(() => import('../../ui/pages/UserBook')),
+    layout: 'admin',
   }
 ];
 

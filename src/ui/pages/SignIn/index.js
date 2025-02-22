@@ -75,12 +75,17 @@ const Index = () => {
         </div>
       )}
       <div className="w-1/2 flex flex-col justify-start items-start p-8">
-        <img
-          src={source}
-          alt="logo img"
-          className="w-32 cursor-pointer "
-          onClick={() => navigate("/")}
-        />
+        <div className="flex">
+          <img
+            src={source}
+            alt="logo img"
+            className="w-32 cursor-pointer "
+            onClick={() => navigate("/")}
+          />
+          <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-600 -ml-4">
+            LIBRIFY
+          </span>
+        </div>
         <img src={cover} alt="cover img" className="w-full mt-4 h-4/5 mx-4" />
       </div>
 
@@ -98,7 +103,7 @@ const Index = () => {
             tag="h2"
             className="text-3xl font-semibold text-center text-gray-900 mb-2"
           >
-            Welcome to EVS
+            Welcome to LIBRIFY
           </CardTitle>
           <CardText className="text-center text-gray-600 mb-6">
             Please sign-in to your account and start the adventure

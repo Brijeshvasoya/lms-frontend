@@ -18,7 +18,8 @@ const Table = ({
       style: {
         borderRadius: "12px",
         overflow: "hidden",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        boxShadow:
+          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
       },
     },
     headRow: {
@@ -93,7 +94,9 @@ const Table = ({
               />
               <span
                 className={`text-xs font-medium ${
-                  row.isVerified ? "text-green-600" : "text-red-600"
+                  row.isVerified
+                    ? "text-green-600"
+                    : "text-red-600"
                 }`}
               >
                 {row.isVerified ? "Active" : "Inactive"}
@@ -101,47 +104,50 @@ const Table = ({
             </div>
           ),
       });
-    }
 
-    baseColumns.push({
-      name: "Actions",
-      selector: (row) => row.actions,
-      cell: (row) => (
-        <div className="flex space-x-3 justify-center">
-          {editData && !row.isDeleted ? (
-            <button
-              onClick={() => editData(row)}
-              className="text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out"
-            >
-              <Edit size={16} />
-            </button>
-          ) : null}
-          {deleteData && !row.isDeleted ? (
-            <button
-              onClick={() => deleteData(row)}
-              className="text-red-500 hover:text-red-700 transition-colors duration-200 ease-in-out"
-            >
-              <Trash size={16} />
-            </button>
-          ) : null}
-          {viewData ? (
-            <button
-              onClick={() => viewData(row)}
-              className="text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out"
-            >
-              <Eye size={16} />
-            </button>
-          ) : null}
-        </div>
-      ),
-    });
+      baseColumns.push({
+        name: "Actions",
+        selector: (row) => row.actions,
+        cell: (row) => (
+          <div className="flex space-x-3 justify-center">
+            {editData && !row.isDeleted ? (
+              <button
+                onClick={() => editData(row)}
+                className="text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out"
+              >
+                <Edit size={16} />
+              </button>
+            ) : null}
+            {deleteData && !row.isDeleted ? (
+              <button
+                onClick={() => deleteData(row)}
+                className="text-red-500 hover:text-red-700 transition-colors duration-200 ease-in-out"
+              >
+                <Trash size={16} />
+              </button>
+            ) : null}
+            {viewData && row?.isVerified ? (
+              <button
+                onClick={() => viewData(row)}
+                className="text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out"
+              >
+                <Eye size={16} />
+              </button>
+            ) : null}
+          </div>
+        ),
+      });
+    }
 
     return baseColumns;
   };
 
   return (
     <Fragment>
-      <div className="react-dataTable w-full rounded-xl overflow-hidden shadow-md" id="data-table">
+      <div
+        className="react-dataTable w-full rounded-xl overflow-hidden shadow-md"
+        id="data-table"
+      >
         <DataTable
           columns={generateActionColumns()}
           data={data}

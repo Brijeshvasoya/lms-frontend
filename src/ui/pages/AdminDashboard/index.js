@@ -11,9 +11,13 @@ import dummyBookCover from "../../../assets/avatar-blank.png";
 import AddBook from "../AddBook";
 import { DELETE_BOOK } from "./mutation";
 import ConfirmationModal from "../../components/Alert";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const { loading, error, data, refetch } = useQuery(GET_BOOKS);
+  const navigate = useNavigate();
+  const { loading, error, data, refetch } = useQuery(GET_BOOKS, {
+    fetchPolicy: "cache-and-network",
+  });
   const [deleteBook, { loading: deleteBookLoading }] = useMutation(
     DELETE_BOOK,
     {
@@ -78,12 +82,6 @@ const Index = () => {
     });
   };
 
-  const handleAddNew = () => {
-    setSelectedBook(null);
-    setIsEdit(false);
-    setIsEditModalOpen(true);
-  };
-
   if (error) {
     toast.error(error?.message, { autoClose: 2000 });
   }
@@ -99,7 +97,7 @@ const Index = () => {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-800">Library Books</h1>
             <Button
-              onClick={handleAddNew}
+              onClick={()=>navigate("/add-book")}
               className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2 z-0"
             >
               <span className="text-lg font-medium">Add New Book</span>
@@ -182,6 +180,7 @@ const Index = () => {
           <AddBook
             bookData={selectedBook}
             isEdit={isEdit}
+            model={true}
             onSuccess={toggleEditModal}
           />
         </Modal>

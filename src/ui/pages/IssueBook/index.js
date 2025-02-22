@@ -18,13 +18,21 @@ const Index = () => {
   const { id } = useParams();
   const { data, loading } = useQuery(GET_BOOK, { variables: { id } });
   const { refetch } = useQuery(GET_ISSUED_BOOKS, {
+    fetchPolicy: "cache-and-network",
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
   });
-  const { refetch: refetchBooks } = useQuery(GET_BOOKS);
+  const { refetch: refetchBooks } = useQuery(GET_BOOKS, {
+    fetchPolicy: "cache-and-network",
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  });
   const [issueBook, { loading: issuingBook }] = useMutation(ISSUE_BOOK);
   const [returnDate, setReturnDate] = useState(null);
   const [book, setBook] = useState(null);

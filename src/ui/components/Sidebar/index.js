@@ -51,13 +51,14 @@ const Index = () => {
   return (
     <div className="flex">
       <div className="w-64 bg-gradient-to-b from-blue-500 to-purple-500 text-white h-full min-h-screen shadow-2xl">
-        <div className="flex items-center justify-center p-6">
+        <div className="flex items-center justify-center pt-6">
           <img 
             src={logo} 
             alt="Logo" 
             className="h-16 w-auto transform transition-transform duration-300 cursor-pointer hover:scale-110"
             onClick={() => navigate(`${role==="admin"?'/admin-dashboard':'/dashboard'}`)} 
           />
+          <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-600 -ml-4">LIBRIFY</span>
         </div>
         
         <div className="px-4 py-6">

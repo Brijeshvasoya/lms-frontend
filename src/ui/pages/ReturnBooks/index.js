@@ -1,11 +1,12 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
+import { Book, Calendar, Clock, XCircle } from "react-feather";
+import { toast } from "react-toastify";
+import moment from "moment";
 import { GET_ISSUED_BOOKS } from "./query";
 import { RETURN_BOOK } from "./mutation";
 import Spinner from "../../components/Spinner";
-import moment from "moment";
-import { toast } from "react-toastify";
-import { Book, Calendar, Clock, XCircle } from "react-feather";
+import ConfirmationModal from "../../components/Alert";
 
 const calculateDaysAndPenalty = (bookToBeReturned) => {
   const returnDate = moment(parseInt(bookToBeReturned)).startOf("day");
@@ -32,23 +33,41 @@ const Index = () => {
     const dueDate = moment(parseInt(issue?.bookToBeReturned)).startOf("day");
     const daysLeft = dueDate.diff(returnDate, "days");
     const penalty = daysLeft < 0 ? Math.abs(daysLeft) * 10 : 0;
-
-    returnBook({
-      variables: {
-        input: {
-          _id: id,
-          returnDate: returnDate.format("YYYY-MM-DD"),
-          panalty: parseInt(penalty),
-        },
-      },
+    ConfirmationModal(
+      "warning",
+      "Are you sure?",
+      "You won't be able to revert this!",
+      "Yes, return it!",
+      true
+    ).then((result) => {
+      if (result.isConfirmed) {
+        ConfirmationModal(
+          "success",
+          "Returned!",
+          "Book has been returned.",
+          "ok",
+          false
+        ).then(() => {
+          returnBook({
+            variables: {
+              input: {
+                _id: id,
+                returnDate: returnDate.format("YYYY-MM-DD"),
+                panalty: parseInt(penalty),
+                panalty: parseInt(penalty),
+              },
+            },
+          })
+            .then(() => {
+              toast.success("Book returned successfully!");
+              refetch();
+            })
+            .catch((err) => {
+              toast.error(err?.message);
+            });
+        })
+      }
     })
-      .then(() => {
-        toast.success("Book returned successfully!");
-        refetch();
-      })
-      .catch((err) => {
-        toast.error(err?.message);
-      });
   };
 
   if (loading)
