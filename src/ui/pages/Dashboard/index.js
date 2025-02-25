@@ -16,7 +16,7 @@ const Index = (props) => {
   const {user}=props;
   const navigate=useNavigate()
   const { loading, error, data } = useQuery(GET_BOOKS,{
-    fetchPolicy:"no-cache",
+    fetchPolicy:"network-only",
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

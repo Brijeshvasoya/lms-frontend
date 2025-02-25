@@ -71,13 +71,13 @@ const Index = (props) => {
       },
     })
       .then(() => {
-        toast.success("Book issued successfully!");
+        toast.success("Book issued successfully!",{autoClose: 1000});
         refetch();
         refetchBooks();
         navigate(-1);
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.message,{autoClose: 2000});
       });
   };
 

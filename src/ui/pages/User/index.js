@@ -98,15 +98,15 @@ const Index = () => {
             variables: { deleteUserId: row._id },
           })
             .then(() => {
-              toast.success("User deleted successfully");
+              toast.success("User deleted successfully",{autoClose: 1000});
               refetch();
             })
             .catch((err) => {
-              toast.error(err?.message || "Failed to delete user");
+              toast.error(err?.message || "Failed to delete user",{autoClose: 2000});
             });
         });
       } else {
-        toast.error("User not deleted");
+        toast.error("User not deleted",{autoClose: 2000});
       }
     });
   };
@@ -140,11 +140,11 @@ const Index = () => {
             },
           })
             .then(() => {
-              toast.success(`${successText} Successfully`);
+              toast.success(`${successText} Successfully`,{autoClose: 1000});
               refetch();
             })
             .catch((err) => {
-              toast.error(err?.message || `Failed to ${actionText}`);
+              toast.error(err?.message || `Failed to ${actionText}`,{autoClose: 2000});
             });
         });
       }

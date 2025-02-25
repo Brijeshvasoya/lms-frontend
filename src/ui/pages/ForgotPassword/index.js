@@ -37,11 +37,11 @@ const ForgotPassword = () => {
       },
     })
       .then(() => {
-        toast.success("Password Changed Successfully");
+        toast.success("Password Changed Successfully",{autoClose: 1000});
         navigate("/");
       })
       .catch((err) => {
-        toast.error(err?.message);
+        toast.error(err?.message,{autoClose: 2000});
       });
     reset();
   };

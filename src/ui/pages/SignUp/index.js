@@ -48,11 +48,11 @@ const Index = () => {
         },
       })
         .then(() => {
-          toast.success("Signed up successfully");
+          toast.success("Signed up successfully",{autoClose: 1000});
           navigate("/");
         })
         .catch((err) => {
-          toast.error(err?.message);
+          toast.error(err?.message,{autoClose: 2000});
         });
     }
     reset();

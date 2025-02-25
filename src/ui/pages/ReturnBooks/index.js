@@ -65,11 +65,11 @@ const Index = () => {
             },
           })
             .then(() => {
-              toast.success("Book returned successfully!");
+              toast.success("Book returned successfully!",{autoClose: 1000});
               refetch();
             })
             .catch((err) => {
-              toast.error(err?.message);
+              toast.error(err?.message,{autoClose: 2000});
             });
         })
       }
