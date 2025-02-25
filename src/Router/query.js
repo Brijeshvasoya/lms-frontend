@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
-export const SIGN_UP = gql`
-  mutation CreateUser($input: userInput!) {
-    createUser(input: $input) {
+export const GET_USER = gql`
+  query GetUser {
+    GetUser {
       _id
       fname
       lname
@@ -13,6 +13,8 @@ export const SIGN_UP = gql`
       isVerified
       isDeleted
       profilePicture
+      totalPenalty
+      isBlocked
     }
   }
 `;

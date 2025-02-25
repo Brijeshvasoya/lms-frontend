@@ -11,20 +11,15 @@ import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 
 const UserDropdown = (props) => {
+  const {role}=props;
   const navigate = useNavigate();
   const [, removeCookie] = useCookies();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  let user = JSON.parse(localStorage.getItem("active_user"));
   
-  const activeUser = JSON.parse(localStorage.getItem("active_user"));
-  const role=activeUser?.role;
-    
   const signOut = () => {
     navigate("/");
-    localStorage.removeItem("active_user");
     localStorage.clear();
     removeCookie("remember");
-    user=null
     toast.success("Logout Successfully", { autoClose: 1000 });
   };
 
@@ -37,7 +32,7 @@ const UserDropdown = (props) => {
           className="flex items-center space-x-2 px-4 py-2 text-white bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg hover: transition-all"
           caret
         >
-          <span>{(user?.role)?.toUpperCase()}</span>
+          <span>{(role)?.toUpperCase()}</span>
           <Menu />
         </DropdownToggle>
         {dropdownOpen && (

@@ -12,9 +12,9 @@ import Spinner from "../../components/Spinner";
 import DatePicker from "../../components/DatePicker";
 import { toast } from "react-toastify";
 
-const Index = () => {
+const Index = (props) => {
+  const { user } = props;
   const navigate = useNavigate();
-  const active_user = JSON.parse(localStorage.getItem("active_user"));
   const { id } = useParams();
   const { data, loading } = useQuery(GET_BOOK, { variables: { id } });
   const { refetch } = useQuery(GET_ISSUED_BOOKS, {
@@ -33,7 +33,13 @@ const Index = () => {
       },
     },
   });
-  const [issueBook, { loading: issuingBook }] = useMutation(ISSUE_BOOK);
+  const [issueBook, { loading: issuingBook }] = useMutation(ISSUE_BOOK,{
+    context:{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    }
+  });
   const [returnDate, setReturnDate] = useState(null);
   const [book, setBook] = useState(null);
 
@@ -44,6 +50,7 @@ const Index = () => {
   }, [data]);
 
   const handleSubmit = async (e) => {
+    console.log(user?._id)
     e.preventDefault();
     if (!returnDate) {
       toast.error("Please select a return date");
@@ -53,7 +60,7 @@ const Index = () => {
       variables: {
         input: {
           bookid: id,
-          studentid: active_user._id,
+          studentid: user?._id,
           bookToBeReturned: moment(returnDate).format("YYYY-MM-DD"),
           returnDays: returnDate
             ? moment(returnDate)

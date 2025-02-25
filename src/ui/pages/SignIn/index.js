@@ -17,7 +17,7 @@ import {
 } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
 
-import cover from "../../../../src/assets/images/pages/login-v2.avif";
+import cover from "../../../../src/assets/images/pages/Login-amico.png";
 import source from "../../../../src/assets/images/logo.png";
 
 const Index = () => {
@@ -48,15 +48,17 @@ const Index = () => {
           }
           if (data?.signInUser?.token) {
             localStorage.setItem("token", data?.signInUser?.token);
-            localStorage.setItem(
-              "active_user",
-              JSON.stringify(data?.signInUser?.user)
-            );
+            // localStorage.setItem(
+            //   "active_user",
+            //   JSON.stringify(data?.signInUser?.user?.role)
+            // );
             toast.success("Login Successfully", { autoClose: 1000 });
             if (data?.signInUser?.user?.role === "admin") {
               navigate("/admin-dashboard");
+              console.log("admin in signin");
             } else {
               navigate("/dashboard");
+              console.log("user in signin");
             }
           }
         })
@@ -68,7 +70,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen container">
+    <div className="flex bg-gradient-to-r from-blue-500 to-purple-500 h-screen container">
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <Spinner size={75} color="#4169E1" />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_WISHLIST } from "./query";
 import { REMOVE_FROM_WISHLIST } from "./mutation";
@@ -7,6 +7,7 @@ import { Button } from "reactstrap";
 import { Trash2 } from "react-feather";
 import { toast } from "react-toastify";
 import moment from "moment";
+import ConfirmationModal from "../../components/Alert";
 import dummyBookCover from "../../../assets/avatar-blank.png";
 
 const Index = () => {
@@ -33,23 +34,8 @@ const Index = () => {
     if (data) {
       setWishlistBooks(data.wishlists);
     }
-  }, [data]);
-
-  const handleRemoveFromWishlist = (id) => {
-    removeFromWishlist({
-      variables: {
-        id: id,
-      },
-    })
-      .then(() => {
-        toast.success("Removed from wishlist", { autoClose: 1000 });
-        refetch();
-      })
-      .catch((err) => {
-        toast.error(err?.message, { autoClose: 2000 });
-      });
-  };
-
+    if (error) return toast.error(error?.message, { autoClose: 2000 });
+  }, [data, error]);
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -57,8 +43,38 @@ const Index = () => {
       </div>
     );
   }
-  
-  if (error) return <p>Error: {error.message}</p>;
+  const handleRemoveFromWishlist = (id) => {
+    ConfirmationModal(
+      "warning",
+      "Are you sure?",
+      "You won't be able to revert this!",
+      "Yes, remove it!",
+      true
+    ).then((result) => {
+      if (result.isConfirmed) {
+        ConfirmationModal(
+          "success",
+          "Removed!",
+          "Book has been removed from wishlist",
+          "ok",
+          false
+        ).then(() => {
+          removeFromWishlist({
+            variables: {
+              id: id,
+            },
+          })
+            .then(() => {
+              toast.success("Removed from wishlist", { autoClose: 1000 });
+              refetch();
+            })
+            .catch((err) => {
+              toast.error(err?.message, { autoClose: 2000 });
+            });
+        });
+      }
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-6">

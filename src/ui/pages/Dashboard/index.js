@@ -12,17 +12,25 @@ import { ADD_WISH_LIST } from "./mutation";
 import { toast } from "react-toastify";
 import dummyBookCover from "../../../assets/avatar-blank.png";
 
-const Index = () => {
+const Index = (props) => {
+  const {user}=props;
   const navigate=useNavigate()
-  const { loading, error, data } = useQuery(GET_BOOKS);
+  const { loading, error, data } = useQuery(GET_BOOKS,{
+    fetchPolicy:"no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  });
   const {data: issuedData} = useQuery(GET_ISSUED_BOOKS, {
+    fetchPolicy:"network-only",
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
   })
-  console.log(issuedData?.BookIssuer)
   const [addWishList] = useMutation(ADD_WISH_LIST, {
     context: {
       headers: {
@@ -54,7 +62,10 @@ const Index = () => {
     if (issuedData) {
       setIssuedBooks(issuedData.BookIssuer);
     }
-  }, [data, wishListData, issuedData]);
+    if (error || wishListError) {
+      toast.error(error?.message, { autoClose: 2000 });
+    }
+  }, [data, wishListData, issuedData, error, wishListError]);
 
   const isBookInWishlist = (bookId) => {
     return wishListBooks.some((wishlist) => wishlist.book._id === bookId);
@@ -85,12 +96,11 @@ const Index = () => {
   };
 
   const handleIssue = (book) => {
+    if(user?.isBlocked){
+      return toast.error("You are blocked for issue books", { autoClose: 2000 });
+    }
     navigate(`/issue-book/${book._id}`);
   };
-
-  if (error || wishListError) {
-    toast.error(error?.message, { autoClose: 2000 });
-  }
 
   return (
     <div className="container mx-auto px-4 py-6">

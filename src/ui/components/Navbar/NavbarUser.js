@@ -15,7 +15,7 @@ const NavbarUser = ({role}) => {
       )}
       <NavItem>
         <NavLink className="text-white hover:text-gray-300">
-          <UserDropdown />
+          <UserDropdown role={role}/>
         </NavLink>
       </NavItem>  
     </ul>

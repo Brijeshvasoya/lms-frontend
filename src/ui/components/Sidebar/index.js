@@ -1,12 +1,12 @@
 import React from "react";
-import { Home, Users, Book } from "react-feather";
+import { Home, Users, Book,Clock } from "react-feather";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 
-const Index = () => {
+const Index = (props) => {
+  const { user } = props;
   const navigate = useNavigate();
-  const active_user = JSON.parse(localStorage.getItem("active_user"));
-  const role = active_user?.role;
+  const role = user?.role;
   const location = useLocation();
   
   const AdminsidebarItems = [
@@ -17,6 +17,7 @@ const Index = () => {
   const UsersidebarItems = [
     { icon: <Home className="w-6 h-6" />, label: "Dashboard", path: "/dashboard" },
     { icon: <Book className="w-6 h-6" />, label: "Return Books", path: "/return-book" },
+    { icon: <Clock className="w-6 h-6" />, label: "History", path: "/history" }
   ];
 
   const renderSidebarItems = (items) => (
@@ -51,11 +52,11 @@ const Index = () => {
   return (
     <div className="flex">
       <div className="w-64 bg-gradient-to-b from-blue-500 to-purple-500 text-white h-full min-h-screen shadow-2xl">
-        <div className="flex items-center justify-center pt-6">
+        <div className="flex pt-8 transform transition-transform duration-300 cursor-pointer hover:scale-110">
           <img 
             src={logo} 
             alt="Logo" 
-            className="h-16 w-auto transform transition-transform duration-300 cursor-pointer hover:scale-110"
+            className="h-16 w-auto "
             onClick={() => navigate(`${role==="admin"?'/admin-dashboard':'/dashboard'}`)} 
           />
           <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-600 -ml-4">LIBRIFY</span>

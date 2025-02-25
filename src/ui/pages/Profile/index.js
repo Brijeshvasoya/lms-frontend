@@ -5,29 +5,36 @@ import { useForm, Controller } from "react-hook-form";
 import { Camera, XCircle } from "react-feather";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import ConfirmationModal from "../../components/Alert";
 import Spinner from "../../components/Spinner";
 import DatePicker from "../../components/DatePicker";
 import dummyImg from "../../../assets/avatar-blank (2).png";
 import { UPDATE_PROFILE } from "./mutation";
 import { DELETE_USER } from "../User/mutation";
+import { GET_USER } from "../../../Router/query";
+
 
 const Index = () => {
   const navigate = useNavigate();
-  const activeUser = JSON.parse(localStorage.getItem("active_user"));
   const [base64Url, setBase64Url] = useState("");
   const [cancel, setCancel] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [, removeCookie] = useCookies();
-
   const {
     control,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
-  const [UpdateUser, { loading }] = useMutation(UPDATE_PROFILE, {
+  const { data, loading , error} = useQuery(GET_USER, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  });
+  const [UpdateUser, { loading: updateLoading }] = useMutation(UPDATE_PROFILE, {
     context: {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -43,25 +50,28 @@ const Index = () => {
   });
 
   useEffect(() => {
-    const localProfilePicture = activeUser ? activeUser.profilePicture : null;
+    const localProfilePicture = data?.GetUser?.profilePicture
+      ? data?.GetUser?.profilePicture
+      : null;
     if (localProfilePicture) {
       setProfilePicture(localProfilePicture);
       setCancel(true);
-    } else if (activeUser?.profilePicture) {
-      setProfilePicture(activeUser.profilePicture);
+    } else if (data?.GetUser?.profilePicture) {
+      setProfilePicture(data?.GetUser?.profilePicture);
       setCancel(true);
     }
-    if (activeUser) {
-      const parsedDob = activeUser?.dob
-        ? new Date(parseInt(activeUser.dob))
+    if (data?.GetUser) {
+      const parsedDob = data?.GetUser?.dob
+        ? new Date(parseInt(data?.GetUser.dob))
         : null;
-      setValue("fname", activeUser?.fname);
-      setValue("lname", activeUser?.lname);
-      setValue("email", activeUser?.email);
+      setValue("fname", data?.GetUser?.fname);
+      setValue("lname", data?.GetUser?.lname);
+      setValue("email", data?.GetUser?.email);
       setValue("dob", parsedDob);
-      setValue("age", activeUser?.age);
+      setValue("age", data?.GetUser?.age);
     }
-  }, [activeUser, setValue]);
+    if (error) return toast.error(error?.message,{ autoClose: 2000 });
+  }, [data, setValue,error]);
 
   useEffect(() => {
     if (base64Url) {
@@ -69,6 +79,14 @@ const Index = () => {
       setCancel(true);
     }
   }, [base64Url]);
+
+  if (loading || deleteLoading|| updateLoading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <Spinner size={75} color="#4169E1" />
+      </div>
+    );
+  }
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -87,13 +105,13 @@ const Index = () => {
     if (base64Url) {
       newDetail = {
         ...data,
-        _id: activeUser?._id,
+        _id: data?.GetUser?._id,
         profilePicture: base64Url,
       };
     } else {
       newDetail = {
         ...data,
-        _id: activeUser?._id,
+        _id: data?.GetUser?._id,
       };
     }
     UpdateUser({
@@ -103,12 +121,11 @@ const Index = () => {
     })
       .then(() => {
         const updatedUser = {
-          ...activeUser,
+          ...data?.GetUser,
           ...newDetail,
         };
-        setProfilePicture(base64Url || activeUser?.profilePicture);
+        setProfilePicture(base64Url || data?.GetUser?.profilePicture);
         toast.success("Your Profile Updated Successfully", { autoClose: 1000 });
-        localStorage.setItem("active_user", JSON.stringify(updatedUser));
       })
       .catch((error) => {
         toast.error(error?.message, { autoClose: 2000 });
@@ -132,8 +149,7 @@ const Index = () => {
             "ok",
             false
           ).then(() => {
-            const updatedUser = { ...activeUser, profilePicture: null };
-            localStorage.setItem("active_user", JSON.stringify(updatedUser));
+            const updatedUser = { ...data?.GetUser, profilePicture: null };
             setBase64Url(null);
             setProfilePicture(null);
             setCancel(false);
@@ -171,10 +187,10 @@ const Index = () => {
           false
         ).then(() => {
           deleteUser({
-            variables: { deleteUserId: activeUser?._id },
+            variables: { deleteUserId: data?.GetUser?._id },
           })
             .then(() => {
-              toast.success("Your Profile is Deleted", { autoClose: 2000 });
+              toast.success("Your Profile is Deleted", { autoClose: 1000 });
               localStorage.clear();
               removeCookie("remember");
               navigate("/");
@@ -188,14 +204,6 @@ const Index = () => {
       }
     });
   };
-
-  if (loading || deleteLoading) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <Spinner size={75} color="#4169E1" />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
@@ -216,7 +224,7 @@ const Index = () => {
                 src={
                   base64Url ||
                   profilePicture ||
-                  activeUser?.profilePicture ||
+                  data?.GetUser?.profilePicture ||
                   dummyImg
                 }
                 alt="Profile"
@@ -239,9 +247,9 @@ const Index = () => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-800">
-              {activeUser?.fname} {activeUser?.lname}
+              {data?.GetUser?.fname} {data?.GetUser?.lname}
             </h2>
-            <p className="text-sm text-gray-500">{activeUser?.email}</p>
+            <p className="text-sm text-gray-500">{data?.GetUser?.email}</p>
           </div>
         </div>
       </div>
@@ -398,7 +406,7 @@ const Index = () => {
             </div>
           </div>
           <div className="flex mt-8 justify-end space-x-4">
-            {activeUser?.role !== "admin" && (
+            {data?.GetUser?.role !== "admin" && (
               <Button
                 type="button"
                 color="secondary"

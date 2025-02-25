@@ -22,7 +22,7 @@ mutation IssueBook($input: issueBookInput!) {
     bookToBeReturned
     returnDate
     isReturned
-    panalty
+    penalty
   }
 }
 `;

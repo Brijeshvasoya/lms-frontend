@@ -7,7 +7,7 @@ import moment from "moment";
 import Table from "../../components/Table";
 import { userTable } from "../../components/Constant";
 import ConfirmationModal from "../../components/Alert";
-import { GET_USER } from "./query";
+import { GET_USERS } from "./query";
 import { DELETE_USER, VERIFY_USER, DEACTIVE_USER } from "./mutation";
 import Spinner from "../../components/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ const Index = () => {
     data: userData,
     loading,
     refetch,
-  } = useQuery(GET_USER, {
+  } = useQuery(GET_USERS, {
     fetchPolicy: "cache-and-network",
     variables: {
       searchTerm: searchTerm.trim() !== "" ? searchTerm : undefined,
@@ -75,8 +75,7 @@ const Index = () => {
   };
 
   const handleViewUser = (row) => {
-    console.log(row?._id);
-    navigate(`/user-book/${row?._id}`);
+    navigate(`/user-book/${row?._id}/${row?.totalPenalty}`);
   }
 
   const handleDeleteUser = (row) => {
@@ -161,7 +160,7 @@ const Index = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <div className="flex justify-between mt-4 space-x-4">
         <Input
           type="text"

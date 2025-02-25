@@ -23,9 +23,16 @@ const Index = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
-  const [returnBook] = useMutation(RETURN_BOOK);
+  const [returnBook] = useMutation(RETURN_BOOK,{
+    context:{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    }
+  });
 
   const handleReturnBook = async (id) => {
     const returnDate = moment();
@@ -53,7 +60,7 @@ const Index = () => {
               input: {
                 _id: id,
                 returnDate: returnDate.format("YYYY-MM-DD"),
-                panalty: parseInt(penalty),
+                penalty: parseInt(penalty),
               },
             },
           })

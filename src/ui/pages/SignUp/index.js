@@ -23,7 +23,7 @@ const Index = () => {
   const [signUp, { loading }] = useMutation(SIGN_UP);
 
   const source = require(`../../../../src/assets/images/logo.png`);
-  const cover = require(`../../../../src/assets/images/pages/sign-up.avif`);
+  const cover = require(`../../../../src/assets/images/pages/Sign up-amico1.png`);
 
   const {
     handleSubmit,
@@ -59,7 +59,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex container">
+    <div className="flex bg-gradient-to-r from-blue-500 to-purple-500 container">
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <Spinner size={75} color="#4169E1" />

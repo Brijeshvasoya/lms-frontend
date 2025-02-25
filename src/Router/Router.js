@@ -1,56 +1,85 @@
 import React, { memo, useEffect, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 import { routes } from "./Routes";
 import Navbar from "../ui/components/Navbar";
 import Sidebar from "../ui/components/Sidebar";
 import Spinner from "../ui/components/Spinner";
+import {GET_USER} from "./query"
 
 const PublicRoute = (props) => {
   const { Component } = props;
   const navigate = useNavigate();
-  const activeUser = JSON.parse(localStorage.getItem("active_user"));
-  const role = activeUser?.role;
   const token = localStorage.getItem("token");
+  
+  const { data, loading } = useQuery(GET_USER, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const role = data?.GetUser?.role;
 
   useEffect(() => {
+    if (loading) return;
+
     if (token) {
       if (role !== "admin") {
         navigate("/dashboard");
       } else {
         navigate("/admin-dashboard");
       }
-      return;
     }
-  }, [token, navigate, role]);
-  if (token) {
-    return null;
-  }
+  }, [loading, token, navigate, role]);
+
+  if (loading) return <Spinner />;
+  if (token) return null;
   return <Component />;
 };
 
 const ProtectRoute = (props) => {
   const { Component } = props;
   const navigate = useNavigate();
-  const activeUser = JSON.parse(localStorage.getItem("active_user"));
-  const role = activeUser?.role;
   const token = localStorage.getItem("token");
+  
+  const { data, error, loading } = useQuery(GET_USER, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const role = data?.GetUser?.role;
 
   useEffect(() => {
+    if (loading) return;
+
     if (!token) {
       navigate("/");
-    }
-    if (role === "admin") {
+    } else if (role === "admin") {
       navigate(-1);
     }
-  }, [token, navigate, role]);
+  }, [loading, token, navigate, role]);
+
+  if (loading) return <Spinner />;
+  if (error) {
+    localStorage.clear();
+    navigate("/");
+    return null;
+  }
 
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar user={data?.GetUser} />
       <div className="w-full">
-        <Navbar />
+        <Navbar user={data?.GetUser} />
         <div className="px-4">
-          <Component />
+          <Component user={data?.GetUser} />
         </div>
       </div>
     </div>
@@ -60,11 +89,22 @@ const ProtectRoute = (props) => {
 const AdminRoute = (props) => {
   const { Component } = props;
   const navigate = useNavigate();
-  const activeUser = JSON.parse(localStorage.getItem("active_user"));
-  const role = activeUser?.role;
   const token = localStorage.getItem("token");
+  
+  const { data, error, loading } = useQuery(GET_USER, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const role = data?.GetUser?.role;
 
   useEffect(() => {
+    if (loading) return;
+
     if (!token) {
       navigate("/");
       return;
@@ -73,15 +113,22 @@ const AdminRoute = (props) => {
       navigate("/dashboard");
       return;
     }
-  }, [token, navigate, role]);
+  }, [loading, token, navigate, role]);
+
+  if (loading) return <Spinner />;
+  if (error) {
+    localStorage.clear();
+    navigate("/");
+    return null;
+  }
 
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar user={data?.GetUser} />
       <div className="w-full">
-        <Navbar />
+        <Navbar user={data?.GetUser} />
         <div className="px-4">
-          <Component />
+          <Component user={data?.GetUser} />
         </div>
       </div>
     </div>

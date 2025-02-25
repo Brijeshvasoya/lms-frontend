@@ -19,7 +19,7 @@ query StudentBookIssuers($studentid: ID!) {
     bookToBeReturned
     returnDate
     isReturned
-    panalty
+    penalty
   }
 }
 `;

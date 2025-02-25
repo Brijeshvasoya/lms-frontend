@@ -15,8 +15,13 @@ import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { loading, error, data, refetch } = useQuery(GET_BOOKS, {
-    fetchPolicy: "cache-and-network",
+  const { loading: dataLoading, error, data, refetch } = useQuery(GET_BOOKS, {
+    fetchPolicy: "no-cache",
+    context: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
   });
   const [deleteBook, { loading: deleteBookLoading }] = useMutation(
     DELETE_BOOK,
@@ -32,12 +37,21 @@ const Index = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (data) {
       setBooks(data.books);
     }
-  }, [data]);
+    if (dataLoading || deleteBookLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+    if (error) {
+      toast.error(error?.message, { autoClose: 2000 });
+    }
+  }, [data, dataLoading, deleteBookLoading, error]);
 
   const handleEdit = (book) => {
     setSelectedBook(book);
@@ -82,13 +96,9 @@ const Index = () => {
     });
   };
 
-  if (error) {
-    toast.error(error?.message, { autoClose: 2000 });
-  }
-
   return (
     <div className="container mx-auto px-4 py-6">
-      {loading || deleteBookLoading ? (
+      {loading ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <Spinner size={75} color="#4169E1" />
         </div>

@@ -18,11 +18,6 @@ const routes = [
     layout: 'user',
   },
   {
-    path:'/admin-dashboard',
-    element: lazy(() => import('../../ui/pages/AdminDashboard')),
-    layout: 'admin',
-  },
-  {
     path:'/dashboard',
     element: lazy(() => import('../../ui/pages/Dashboard')),
   },
@@ -43,6 +38,15 @@ const routes = [
     element: lazy(() => import('../../ui/pages/ReturnBooks')),
   },
   {
+    path:'/history',
+    element: lazy(() => import('../../ui/pages/History')),
+  },
+  {
+    path:'/admin-dashboard',
+    element: lazy(() => import('../../ui/pages/AdminDashboard')),
+    layout: 'admin',
+  },
+  {
     path:'/users',
     element: lazy(() => import('../../ui/pages/User')),
     layout: 'admin',
@@ -58,7 +62,7 @@ const routes = [
     layout: 'admin',
   },
   {
-    path:'/user-book/:id',
+    path:'/user-book/:id/:amount',
     element: lazy(() => import('../../ui/pages/UserBook')),
     layout: 'admin',
   }

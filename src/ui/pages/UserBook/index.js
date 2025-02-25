@@ -8,9 +8,10 @@ import { GET_USER_BOOKS } from "./mutation";
 import Spinner from "../../components/Spinner";
 import Table from "../../components/Table";
 import { userBookTable } from "../../components/Constant";
+import { toast } from "react-toastify";
 
 const Index = () => {
-  const { id } = useParams();
+  const { id, amount } = useParams();
   const { loading, error, data } = useQuery(GET_USER_BOOKS, {
     variables: { studentid: id },
     context: {
@@ -32,20 +33,16 @@ const Index = () => {
         }))
       setBookData(newData);
     }
-  }, [data]);
+  if (error) return toast.error(error?.message,{ autoClose: 2000 });
+   }, [data, error]);
 
-  if (loading)
+   if (loading)
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <Spinner size={75} color="#4169E1" />
       </div>
     );
-  if (error) return <div className="text-red-500">Error: {error.message}</div>;
 
-  const totalPenalty = bookData.reduce(
-    (total, book) => total + book.panalty,
-    0
-  );
   const userName =
     data?.studentBookIssuers[0]?.studentid?.fname +
       " " +
@@ -62,7 +59,7 @@ const Index = () => {
           className="flex items-center text-xl py-2 px-4 rounded-lg bg-red-600 text-white shadow-md"
         >
           <DollarSign className="mr-2" />
-          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text">Total Penalty: </span>{totalPenalty}
+          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text">Total Penalty : {amount}</span>
         </Badge>
       </div>
 

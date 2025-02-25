@@ -41,6 +41,19 @@ export const userTable = [
     sortable: true,
     minwidth: "150px",
   },
+  {
+    selector: (row) =>
+      row?.totalPenalty && (
+        <span className="px-3 py-1 bg-red-200 text-red-600 rounded-lg text-xs font-medium">
+          {row?.totalPenalty}
+        </span>
+      ),
+    name: "Total Penalty",
+    sortField: "totalPenalty",
+    sortable: true,
+    width:"150px",
+    minwidth: "150px",
+  },
 ];
 
 export const userBookTable = [
@@ -80,9 +93,13 @@ export const userBookTable = [
     minwidth: "150px",
   },
   {
-    selector: (row) => row?.panalty,
+    selector: (row) => row?.penalty && (
+      <span className="px-3 py-1 bg-red-200 text-red-600 rounded-lg text-xs font-medium">
+        {row?.penalty}
+      </span>
+    ),
     name: "Penalty",
-    sortField: "panalty",
+    sortField: "penalty",
     sortable: true,
     minwidth: "150px",
   },
@@ -102,4 +119,42 @@ export const userBookTable = [
     sortable: true,
     minWidth: "150px",
   },
+];
+
+export const historyTable = [
+  {
+    selector: (row) => row?.totalIssuedBooks,
+    name: "Total Issued Books",
+    sortField: "totalIssuedBooks",
+    sortable: true,
+    minWidth: "150px",
+  },
+  {
+    selector: (row) => row?.totalReturnedBooks,
+    name: "Total Returned Books",
+    sortField: "totalReturnedBooks",
+    sortable: true,
+    minWidth: "150px",
+  },
+  {
+    selector: (row) => row?.totalPendingBooks,
+    name: "Total Pending Books",
+    sortField: "totalPendingBooks",
+    sortable: true,
+    minWidth: "150px",
+  },
+  {
+    selector: (row) => row?.totalLateReturnedBooks,
+    name: "Total Late Returned Books",
+    sortField: "totalLateReturnedBooks",
+    sortable: true,
+    minWidth: "150px",
+  },
+  {
+    selector: (row) => row?.totalPenalty,
+    name: "Total Penalty",
+    sortField: "totalPenalty",
+    sortable: true,
+    minWidth: "150px",
+  }
 ];

@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Button, Form, Input, Label, FormText } from "reactstrap";
 import InputPasswordToggle from "../../components/input-password-toggle";
 import logo from "../../../../src/assets/images/logo.png";
-import source from "../../../../src/assets/images/pages/forgot-password.avif";
+import source from "../../../../src/assets/images/pages/Reset password-amico.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "react-feather";
 import { useMutation } from "@apollo/client";
@@ -47,7 +47,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex h-screen container">
+    <div className="flex bg-gradient-to-r from-blue-500 to-purple-500 h-screen container">
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <Spinner size={75} color="#4169E1" />
