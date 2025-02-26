@@ -5,6 +5,7 @@ export const GET_ISSUED_BOOKS = gql`
     BookIssuer {
       _id
       bookToBeReturned
+      issuedDate
       bookid {
         _id
         title

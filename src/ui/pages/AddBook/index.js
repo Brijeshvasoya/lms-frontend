@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import DatePicker from "../../components/DatePicker";
-import { Camera } from "react-feather";
+import { Camera, Trash } from "react-feather";
 import { toast } from "react-toastify";
 import dummyBookCover from "../../../assets/avatar-blank.png";
 import Spinner from "../../components/Spinner";
 import { ADD_BOOK, UPDATE_BOOK } from "./mutation";
 import { GET_BOOKS } from "../AdminDashboard/query";
+import ConfirmationModal from "../../components/Alert";
 
 const Index = ({ bookData, isEdit, onSuccess, model }) => {
   const navigate = useNavigate();
   const [base64Url, setBase64Url] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cancel, setCancel] = useState(false);
 
   const {
     control,
@@ -56,20 +58,50 @@ const Index = ({ bookData, isEdit, onSuccess, model }) => {
         title: bookData.title,
         author: bookData.author,
         publisher: bookData.publisher,
-        publishDate: moment(bookData.publishDate).format("YYYY-MM-DD"),
+        publishDate: moment(bookData.publishDate).format("DD-MM-YYYY"),
       });
     }
   }, [isEdit, bookData, reset]);
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+    const file = event?.target?.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setBase64Url(reader.result);
+        setBase64Url(reader?.result);
+        setCancel(true);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const removeImage = () => {
+    ConfirmationModal(
+      "warning",
+      "Are you sure?",
+      "You won't be able to revert this!",
+      "Yes, delete it!",
+      true
+    ).then((result) => {
+      if (result.isConfirmed) {
+        ConfirmationModal(
+          "success",
+          "Deleted!",
+          "Your Book Cover is Removed",
+          "ok",
+          false
+        ).then(() => {
+          setBase64Url("");
+          setCancel(false);
+          const fileInput = document.getElementById("cover-image");
+          if (fileInput) {
+            fileInput.value = "";
+          }
+        }).catch((error) => {
+          toast.error(error?.message, { autoClose: 2000 });
+        });
+      }
+    });
   };
 
   const onSubmit = (data) => {
@@ -123,9 +155,9 @@ const Index = ({ bookData, isEdit, onSuccess, model }) => {
   };
 
   const handleCancel = () => {
-    if(model){
+    if (model) {
       onSuccess();
-    }else{
+    } else {
       navigate("/admin-dashboard");
     }
   };
@@ -139,17 +171,27 @@ const Index = ({ bookData, isEdit, onSuccess, model }) => {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={`bg-white ${!isEdit && "p-8 rounded-2xl shadow-xl border border-gray-100"}`}>
+        <div
+          className={`bg-white ${
+            !isEdit && "p-8 rounded-2xl shadow-xl border border-gray-100"
+          }`}
+        >
           {!isEdit && (
             <div className="mb-8 text-center">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Add New Book
               </h3>
-              <p className="text-gray-500 mt-2">Fill in the details to add a new book to the library</p>
+              <p className="text-gray-500 mt-2">
+                Fill in the details to add a new book to the library
+              </p>
             </div>
           )}
 
-          <div className={`${isEdit ? "flex gap-8" : "flex flex-col md:flex-row gap-8"}`}>
+          <div
+            className={`${
+              isEdit ? "flex gap-8" : "flex flex-col md:flex-row gap-8"
+            }`}
+          >
             <div className={`${isEdit ? "w-1/3" : "w-full md:w-1/3"}`}>
               <div className="flex justify-center">
                 <div className="relative group -top-4">
@@ -171,9 +213,17 @@ const Index = ({ bookData, isEdit, onSuccess, model }) => {
                       htmlFor="cover-image"
                       className="cursor-pointer absolute bottom-3 right-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full p-3 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl"
                     >
-                      <Camera className="h-5 w-5 text-white" />
+                      <Camera className="h-5 w-5 text-white transform transition-all duration-300 hover:scale-110" />
                     </Label>
                   </div>
+                  {cancel && (
+                    <Label
+                      className="cursor-pointer absolute top-3 right-3 bg-gradient-to-r from-red-600 to-purple-600 rounded-full p-3 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl"
+                      onClick={removeImage}
+                    >
+                      <Trash className="h-5 w-5 text-white transform transition-all duration-300 hover:scale-110" />
+                    </Label>
+                  )}
                 </div>
               </div>
             </div>

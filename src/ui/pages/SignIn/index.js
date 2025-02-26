@@ -55,10 +55,8 @@ const Index = () => {
             toast.success("Login Successfully", { autoClose: 1000 });
             if (data?.signInUser?.user?.role === "admin") {
               navigate("/admin-dashboard");
-              console.log("admin in signin");
             } else {
               navigate("/dashboard");
-              console.log("user in signin");
             }
           }
         })

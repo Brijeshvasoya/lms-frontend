@@ -18,8 +18,8 @@ const Table = ({
       style: {
         borderRadius: "12px",
         overflow: "hidden",
-        boxShadow:
-          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        width: "auto",
+        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
       },
     },
     headRow: {
@@ -144,19 +144,16 @@ const Table = ({
 
   return (
     <Fragment>
-      <div
-        className="react-dataTable w-full rounded-xl overflow-hidden shadow-md"
-        id="data-table"
-      >
+     <div className="react-dataTable w-full rounded-xl overflow-hidden shadow-md" id="data-table">
         <DataTable
           columns={generateActionColumns()}
           data={data}
           customStyles={customStyles}
           pagination
-          paginationPerPage={10}
-          paginationRowsPerPageOptions={[10, 25, 50, 100]}
+          paginationPerPage={5}
+          paginationRowsPerPageOptions={[5, 10, 15, 20,25,50,75,100]}
           sortIcon={<ChevronDown />}
-          className="rounded-xl"
+        className="w-full"
         />
       </div>
     </Fragment>

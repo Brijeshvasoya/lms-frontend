@@ -14,6 +14,8 @@ export const GET_USERS = gql`
       isDeleted
       profilePicture
       totalPenalty
+      totalLateReturnedBooks
+      isBlocked
     }
   }
 `;

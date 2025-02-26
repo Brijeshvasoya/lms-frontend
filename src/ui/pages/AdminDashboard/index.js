@@ -105,7 +105,7 @@ const Index = () => {
       ) : (
         <>
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-800">Library Books</h1>
+            <h1 className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 font-bold text-gray-800">Library Books</h1>
             <Button
               onClick={()=>navigate("/add-book")}
               className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2 z-0"

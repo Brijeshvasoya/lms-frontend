@@ -16,13 +16,11 @@ const Index = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [dataLoading, setDataLoading] = useState(false);
 
-  const {
-    data: userData,
-    loading,
-    refetch,
-  } = useQuery(GET_USERS, {
-    fetchPolicy: "cache-and-network",
+
+  const { data: userData, loading, refetch } = useQuery(GET_USERS, {
+    fetchPolicy: "network-only",
     variables: {
       searchTerm: searchTerm.trim() !== "" ? searchTerm : undefined,
     },
@@ -58,25 +56,24 @@ const Index = () => {
   });
 
   useEffect(() => {
-    if (!userData?.users) {
-      setFilteredUsers([]);
-      return;
-    }
-    const user = userData.users.map((user) => ({
+    if (!userData?.users) return;
+
+    const updatedUsers = userData.users.map((user) => ({
       ...user,
       dob: user.dob ? moment(parseInt(user.dob)).format("DD MMM YYYY") : "N/A",
     }));
-    setFilteredUsers(user);
+
+    setFilteredUsers(updatedUsers);
+    setDataLoading(loading);
   }, [userData,loading]);
 
   const handleChange = (e) => {
-    const term = e.target.value;
-    setSearchTerm(term);
+    setSearchTerm(e.target.value);
   };
 
   const handleViewUser = (row) => {
     navigate(`/user-book/${row?._id}/${row?.totalPenalty}`);
-  }
+  };
 
   const handleDeleteUser = (row) => {
     ConfirmationModal(
@@ -98,15 +95,17 @@ const Index = () => {
             variables: { deleteUserId: row._id },
           })
             .then(() => {
-              toast.success("User deleted successfully",{autoClose: 1000});
+              toast.success("User deleted successfully", { autoClose: 1000 });
               refetch();
             })
             .catch((err) => {
-              toast.error(err?.message || "Failed to delete user",{autoClose: 2000});
+              toast.error(err?.message || "Failed to delete user", {
+                autoClose: 2000,
+              });
             });
         });
       } else {
-        toast.error("User not deleted",{autoClose: 2000});
+        toast.error("User not deleted", { autoClose: 2000 });
       }
     });
   };
@@ -140,18 +139,20 @@ const Index = () => {
             },
           })
             .then(() => {
-              toast.success(`${successText} Successfully`,{autoClose: 1000});
+              toast.success(`${successText} Successfully`, { autoClose: 1000 });
               refetch();
             })
             .catch((err) => {
-              toast.error(err?.message || `Failed to ${actionText}`,{autoClose: 2000});
+              toast.error(err?.message || `Failed to ${actionText}`, {
+                autoClose: 2000,
+              });
             });
         });
       }
     });
   };
 
-  if (loading) {
+  if (dataLoading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <Spinner size={75} color="#4169E1" />
@@ -160,7 +161,7 @@ const Index = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <div className="flex justify-between mt-4 space-x-4">
         <Input
           type="text"

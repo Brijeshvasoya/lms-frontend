@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { Book, Calendar, Clock, XCircle } from "react-feather";
+import { Book, Calendar, Clock, XCircle,Clipboard } from "react-feather";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { GET_ISSUED_BOOKS } from "./query";
@@ -117,6 +117,15 @@ const Index = () => {
                   </div>
 
                   <div className="mt-4 space-y-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                      <Clipboard size={16} className="mr-2 text-gray-400" />
+                      <span>Issued Date: </span>
+                      <span className="ml-1 font-medium">
+                        {moment(parseInt(issue?.issuedDate)).format(
+                          "DD MMMM YYYY"
+                        )}
+                      </span>
+                    </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Calendar size={16} className="mr-2 text-gray-400" />
                       <span>Return Date: </span>

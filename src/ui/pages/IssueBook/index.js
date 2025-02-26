@@ -50,7 +50,6 @@ const Index = (props) => {
   }, [data]);
 
   const handleSubmit = async (e) => {
-    console.log(user?._id)
     e.preventDefault();
     if (!returnDate) {
       toast.error("Please select a return date");

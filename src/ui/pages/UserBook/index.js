@@ -25,18 +25,22 @@ const Index = () => {
 
   useEffect(() => {
     if (data) {
-        const newData=data?.studentBookIssuers.map((book)=>({
-            ...book,
-            bookToBeReturned:moment(parseInt(book?.bookToBeReturned)).format("DD MMM YYYY"),
-            returnDate:book?.returnDate?moment(parseInt(book?.returnDate)).format("DD-MM-YYYY"):null,
-            issuedDate:moment(parseInt(book?.issuedDate)).format("DD-MM-YYYY"),
-        }))
+      const newData = data?.studentBookIssuers.map((book) => ({
+        ...book,
+        bookToBeReturned: moment(parseInt(book?.bookToBeReturned)).format(
+          "DD MMM YYYY"
+        ),
+        returnDate: book?.returnDate
+          ? moment(parseInt(book?.returnDate)).format("DD-MM-YYYY")
+          : null,
+        issuedDate: moment(parseInt(book?.issuedDate)).format("DD-MM-YYYY"),
+      }));
       setBookData(newData);
     }
-  if (error) return toast.error(error?.message,{ autoClose: 2000 });
-   }, [data, error]);
+    if (error) return toast.error(error?.message, { autoClose: 2000 });
+  }, [data, error]);
 
-   if (loading)
+  if (loading)
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <Spinner size={75} color="#4169E1" />
@@ -49,25 +53,27 @@ const Index = () => {
       data?.studentBookIssuers[0]?.studentid?.lname || "User";
 
   return (
-    <div className="p-12 bg-gray-50 rounded-lg shadow-xl max-w-7xl mx-auto">
+    <div className="container rounded-lg shadow-xl max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-extrabold text-3xl bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text tracking-tight text-center">
-          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text">Student Name: </span> {userName}
+          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text">
+            Student Name:{" "}
+          </span>{" "}
+          {userName}
         </h1>
         <Badge
           color="danger"
           className="flex items-center text-xl py-2 px-4 rounded-lg bg-red-600 text-white shadow-md"
         >
           <DollarSign className="mr-2" />
-          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text">Total Penalty : {amount}</span>
+          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text">
+            Total Penalty : {amount}
+          </span>
         </Badge>
       </div>
-
-      <Table
-        columns={userBookTable}
-        data={bookData}
-        pagination
-      />
+      <div className="my-5">
+        <Table columns={userBookTable} data={bookData}/>
+      </div>
     </div>
   );
 };

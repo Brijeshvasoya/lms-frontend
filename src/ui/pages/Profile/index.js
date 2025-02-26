@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Label, Button, Input, FormText } from "reactstrap";
+import { Label, Button, Input, FormText, Modal, ModalBody } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
-import { Camera, XCircle } from "react-feather";
+import { Camera, XCircle, X } from "react-feather";
 import { toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import { useMutation } from "@apollo/client";
@@ -19,6 +19,7 @@ const Index = (props) => {
   const [base64Url, setBase64Url] = useState("");
   const [cancel, setCancel] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [, removeCookie] = useCookies();
   const {
     control,
@@ -47,9 +48,6 @@ const Index = (props) => {
       : null;
     if (localProfilePicture) {
       setProfilePicture(localProfilePicture);
-      setCancel(true);
-    } else if (user?.profilePicture) {
-      setProfilePicture(user?.profilePicture);
       setCancel(true);
     }
     if (user) {
@@ -101,6 +99,7 @@ const Index = (props) => {
       newDetail = {
         ...data,
         _id: user?._id,
+        profilePicture: "",
       };
     }
     UpdateUser({
@@ -109,11 +108,7 @@ const Index = (props) => {
       },
     })
       .then(() => {
-        const updatedUser = {
-          ...user,
-          ...newDetail,
-        };
-        setProfilePicture(base64Url || user?.profilePicture);
+        setProfilePicture(base64Url);
         toast.success("Your Profile Updated Successfully", { autoClose: 1000 });
       })
       .catch((error) => {
@@ -138,7 +133,6 @@ const Index = (props) => {
             "ok",
             false
           ).then(() => {
-            const updatedUser = { ...user, profilePicture: null };
             setBase64Url(null);
             setProfilePicture(null);
             setCancel(false);
@@ -157,6 +151,12 @@ const Index = (props) => {
 
   const handleCancel = () => {
     navigate(-1);
+  };
+
+  const showImage = () => {
+    if (base64Url || profilePicture) {
+      setShowImageModal(true);
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -196,6 +196,30 @@ const Index = (props) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
+      <Modal
+        isOpen={showImageModal}
+        toggle={() => setShowImageModal(!showImageModal)}
+        className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50"
+      >
+        <ModalBody className="p-4 bg-white rounded-lg">
+          <div className="relative">
+            <div className="w-64 h-96">
+              <img
+                src={base64Url || profilePicture || dummyImg}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+            <button
+              className="absolute -top-6 -right-6 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg text-xl font-bold"
+              onClick={() => setShowImageModal(false)}
+            >
+              <X />
+            </button>
+          </div>
+        </ModalBody>
+      </Modal>
+
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-10">
           <div className="relative">
@@ -210,14 +234,10 @@ const Index = (props) => {
             )}
             <div className="relative group">
               <img
-                src={
-                  base64Url ||
-                  profilePicture ||
-                  user?.profilePicture ||
-                  dummyImg
-                }
+                src={base64Url || profilePicture || dummyImg}
                 alt="Profile"
-                className="rounded-full h-24 w-24 object-cover border-4 border-white shadow-lg"
+                className="rounded-full h-24 w-24 object-cover border-4 border-white shadow-lg cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={showImage}
               />
               <Input
                 type="file"

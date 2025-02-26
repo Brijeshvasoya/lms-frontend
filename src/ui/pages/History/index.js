@@ -97,7 +97,7 @@ const Index = () => {
                 </p>
                 <p>
                   <strong className="text-gray-700">Status:</strong>{" "}
-                  {book?.isReturned ? "Returned" : "Not Returned"}
+                  {book?.isReturned ? <span className="text-green-700">Returned</span> : <span className="text-red-600">Not Returned</span>}
                 </p>
               </div>
             </div>

@@ -1,17 +1,10 @@
 export const userTable = [
   {
-    selector: (row) => row?.fname,
-    name: "First Name",
-    sortField: "fname",
+    selector: (row) => row?.fname + " " + row?.lname,
+    name: "Full Name",
+    sortField: "fname + lname",
     sortable: true,
-    minwidth: "150px",
-  },
-  {
-    selector: (row) => row?.lname,
-    name: "Last Name",
-    sortField: "lname",
-    sortable: true,
-    minwidth: "150px",
+    maxWidth: "120px",
   },
   {
     selector: (row) => row?.email,
@@ -25,7 +18,7 @@ export const userTable = [
     name: "Age",
     sortField: "age",
     sortable: true,
-    minwidth: "150px",
+    maxWidth: "50px",
   },
   {
     selector: (row) => row?.dob,
@@ -39,6 +32,13 @@ export const userTable = [
     name: "Role",
     sortField: "role",
     sortable: true,
+    maxWidth: "50px",
+  },
+  {
+    selector: (row) => row?.totalLateReturnedBooks,
+    name: "Total Late Returned Books",
+    sortField: "totalLateReturnedBooks",
+    sortable: true,
     minwidth: "150px",
   },
   {
@@ -51,7 +51,6 @@ export const userTable = [
     name: "Total Penalty",
     sortField: "totalPenalty",
     sortable: true,
-    width:"150px",
     minwidth: "150px",
   },
 ];
@@ -119,42 +118,4 @@ export const userBookTable = [
     sortable: true,
     minWidth: "150px",
   },
-];
-
-export const historyTable = [
-  {
-    selector: (row) => row?.totalIssuedBooks,
-    name: "Total Issued Books",
-    sortField: "totalIssuedBooks",
-    sortable: true,
-    minWidth: "150px",
-  },
-  {
-    selector: (row) => row?.totalReturnedBooks,
-    name: "Total Returned Books",
-    sortField: "totalReturnedBooks",
-    sortable: true,
-    minWidth: "150px",
-  },
-  {
-    selector: (row) => row?.totalPendingBooks,
-    name: "Total Pending Books",
-    sortField: "totalPendingBooks",
-    sortable: true,
-    minWidth: "150px",
-  },
-  {
-    selector: (row) => row?.totalLateReturnedBooks,
-    name: "Total Late Returned Books",
-    sortField: "totalLateReturnedBooks",
-    sortable: true,
-    minWidth: "150px",
-  },
-  {
-    selector: (row) => row?.totalPenalty,
-    name: "Total Penalty",
-    sortField: "totalPenalty",
-    sortable: true,
-    minWidth: "150px",
-  }
 ];
